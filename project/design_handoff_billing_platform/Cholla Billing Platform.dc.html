@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="cholla-data.js"></script>
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{font-family:'Inter',system-ui,sans-serif;background:#EEF4FB;color:#21314F;-webkit-font-smoothing:antialiased}
+    input,button,select{font-family:inherit}
+    button{cursor:pointer}
+    ::placeholder{color:#9AA8BD}
+    @keyframes cb-fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes cb-pulse{0%,100%{opacity:1}50%{opacity:.4}}
+    .cb-scroll::-webkit-scrollbar{width:10px;height:10px}
+    .cb-scroll::-webkit-scrollbar-thumb{background:#C9D6E8;border-radius:999px;border:3px solid transparent;background-clip:content-box}
+    .cb-nav:hover{background:rgba(255,255,255,.08)!important}
+  </style>
+</helmet>
+
+<template id="__bundler_thumbnail" data-bg-color="#21314F">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#21314F"/>
+    <rect x="360" y="250" width="150" height="300" rx="16" fill="#4C84C4"/>
+    <rect x="530" y="330" width="150" height="220" rx="16" fill="#3F9C93"/>
+    <rect x="700" y="200" width="150" height="350" rx="16" fill="#BE6A45"/>
+    <text x="600" y="640" font-family="Georgia, serif" font-size="70" font-style="italic" fill="#DCE8F6" text-anchor="middle">Cholla</text>
+    <text x="600" y="700" font-family="Inter, sans-serif" font-size="30" letter-spacing="6" fill="#8FA6C9" text-anchor="middle">BILLING &amp; UR</text>
+  </svg>
+</template>
+<div style="min-height:100vh;background:#EEF4FB">
+
+  <!-- ================= LOGIN ================= -->
+  <sc-if value="{{ showLogin }}" hint-placeholder-val="{{ true }}">
+  <div data-screen-label="Login" style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;background:radial-gradient(130% 90% at 50% 0%,#DCE8F6 0%,#EEF4FB 55%)">
+    <div style="width:440px;max-width:100%;background:#fff;border-radius:24px;border:1px solid #DCE3EE;padding:40px 40px 30px;box-shadow:0 30px 70px -30px rgba(33,49,79,.45)">
+      <img src="assets/cholla-logo.png" alt="Cholla Behavioral Health" style="height:52px;width:auto;display:block;margin:0 auto 6px">
+      <p style="text-align:center;font:600 11.5px Inter;letter-spacing:.14em;text-transform:uppercase;color:#4C84C4;margin:8px 0 2px">Billing &amp; UR Intelligence</p>
+      <h1 style="text-align:center;font:600 21px Poppins;margin:0 0 22px;color:#21314F">Sign in to your workspace</h1>
+
+      <button onClick="{{ ssoLogin }}" style="width:100%;display:flex;align-items:center;justify-content:center;gap:11px;border:none;padding:14px;border-radius:13px;font:600 15px Poppins;color:#fff;background:#21314F;box-shadow:0 10px 22px -10px rgba(33,49,79,.6);margin-bottom:16px">
+        <svg width="18" height="18" viewBox="0 0 23 23"><rect width="10" height="10" x="1" y="1" fill="#F25022"/><rect width="10" height="10" x="12" y="1" fill="#7FBA00"/><rect width="10" height="10" x="1" y="12" fill="#00A4EF"/><rect width="10" height="10" x="12" y="12" fill="#FFB900"/></svg>
+        Sign in with Microsoft
+      </button>
+      <div style="display:flex;align-items:center;gap:12px;margin:6px 0 16px"><div style="flex:1;height:1px;background:#E7EDF5"></div><span style="font:500 11.5px Inter;color:#9AA8BD">or with email</span><div style="flex:1;height:1px;background:#E7EDF5"></div></div>
+      <input value="{{ loginEmail }}" onInput="{{ onLoginEmail }}" placeholder="you@chollabh.org" style="width:100%;padding:12px 15px;border:1.5px solid #DCE3EE;border-radius:12px;font:500 14px Inter;color:#21314F;margin-bottom:11px;outline:none">
+      <input value="{{ loginPass }}" onInput="{{ onLoginPass }}" type="password" placeholder="Password" style="width:100%;padding:12px 15px;border:1.5px solid #DCE3EE;border-radius:12px;font:500 14px Inter;color:#21314F;margin-bottom:6px;outline:none">
+      <div style="text-align:right;margin-bottom:16px"><a href="#" style="font:500 12px Inter;color:#4C84C4;text-decoration:none">Forgot password?</a></div>
+      <button onClick="{{ emailLogin }}" style="width:100%;border:1.5px solid #DCE3EE;background:#fff;color:#21314F;padding:12px;border-radius:12px;font:600 14.5px Poppins;margin-bottom:22px">Continue with email</button>
+
+      <div style="background:#F7FAFE;border:1px solid #E7EDF5;border-radius:14px;padding:14px">
+        <div style="font:600 11px Inter;letter-spacing:.08em;text-transform:uppercase;color:#7A8AA3;margin-bottom:9px;text-align:center">Demo — preview as role</div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:7px">
+          <sc-for list="{{ roleChips }}" as="r" hint-placeholder-count="2">
+            <button onClick="{{ r.onClick }}" style="border:1.5px solid {{ r.bd }};background:{{ r.bg }};color:{{ r.fg }};font:600 12px Inter;padding:10px 4px;border-radius:10px">{{ r.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+      <p style="text-align:center;font:400 11px Inter;color:#9AA8BD;margin:18px 0 0;line-height:1.5">HIPAA-conscious · SOC 2 · data under BAA</p>
+    </div>
+  </div>
+  </sc-if>
+
+  <!-- ================= APP SHELL ================= -->
+  <sc-if value="{{ showApp }}">
+  <div style="display:flex;min-height:100vh">
+
+    <!-- SIDEBAR -->
+    <aside style="width:{{ sidebarW }};flex:none;background:#21314F;color:#fff;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;transition:width .18s">
+      <div style="padding:16px 16px 14px;border-bottom:1px solid rgba(255,255,255,.08)">
+        <div style="background:#fff;border-radius:12px;padding:10px 12px;display:flex;align-items:center;justify-content:center">
+          <img src="assets/cholla-logo.png" alt="Cholla Behavioral Health" style="height:{{ sidebarLogoH }};width:auto;display:block">
+        </div>
+        <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}">
+        <div style="text-align:center;font:500 10px Inter;letter-spacing:.12em;text-transform:uppercase;color:#8FA6C9;margin-top:9px">Billing &amp; UR Platform</div>
+        </sc-if>
+      </div>
+
+      <div class="cb-scroll" style="flex:1;overflow-y:auto;padding:14px 12px">
+        <sc-for list="{{ navGroups }}" as="grp" hint-placeholder-count="3">
+          <div style="margin-bottom:18px">
+            <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}">
+            <div style="font:600 10px Inter;letter-spacing:.1em;text-transform:uppercase;color:#6E86AD;padding:0 12px 8px">{{ grp.label }}</div>
+            </sc-if>
+            <sc-for list="{{ grp.items }}" as="it" hint-placeholder-count="3">
+              <button class="cb-nav" onClick="{{ it.onClick }}" title="{{ it.label }}" style="width:100%;display:flex;align-items:center;gap:12px;border:none;background:{{ it.bg }};color:{{ it.fg }};padding:11px 12px;border-radius:11px;font:600 13.5px Inter;margin-bottom:3px;text-align:left;transition:background .12s">
+                <span style="width:20px;height:20px;flex:none;display:flex;align-items:center;justify-content:center">{{ it.icon }}</span>
+                <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}"><span style="flex:1">{{ it.label }}</span></sc-if>
+                <sc-if value="{{ it.showAlert }}"><span style="background:#C1453B;color:#fff;font:700 10px Inter;padding:2px 7px;border-radius:999px">{{ it.alert }}</span></sc-if>
+              </button>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="padding:12px;border-top:1px solid rgba(255,255,255,.08)">
+        <button onClick="{{ toggleSidebar }}" class="cb-nav" style="width:100%;display:flex;align-items:center;gap:12px;border:none;background:transparent;color:#8FA6C9;padding:10px 12px;border-radius:11px;font:600 12.5px Inter">
+          <span style="width:20px;flex:none;text-align:center">{{ collapseIcon }}</span>
+          <sc-if value="{{ sidebarOpen }}" hint-placeholder-val="{{ true }}"><span>Collapse</span></sc-if>
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN COLUMN -->
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+
+      <!-- TOP BAR -->
+      <header style="background:#fff;border-bottom:1px solid #DCE3EE;padding:12px 26px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:40;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:10px;padding:6px 13px 6px 8px;border:1.5px solid #DCE3EE;border-radius:11px">
+          <img src="assets/cholla-logo.png" alt="Cholla Behavioral Health" style="height:22px;width:auto;display:block">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9AA8BD" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+        </div>
+
+        <div style="display:flex;gap:3px;background:#EEF4FB;padding:4px;border-radius:11px">
+          <sc-for list="{{ dateSeg }}" as="d" hint-placeholder-count="6">
+            <button onClick="{{ d.onClick }}" style="border:none;padding:7px 12px;border-radius:8px;font:600 12.5px Inter;background:{{ d.bg }};color:{{ d.fg }}">{{ d.label }}</button>
+          </sc-for>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:8px">
+          <select value="{{ payerFilter }}" onChange="{{ onPayer }}" style="padding:8px 11px;border:1.5px solid #DCE3EE;border-radius:10px;font:600 12.5px Inter;color:#21314F;background:#fff;outline:none">
+            <sc-for list="{{ payerOptions }}" as="o" hint-placeholder-count="5"><option value="{{ o }}">{{ o }}</option></sc-for>
+          </select>
+          <select value="{{ locFilter }}" onChange="{{ onLoc }}" style="padding:8px 11px;border:1.5px solid #DCE3EE;border-radius:10px;font:600 12.5px Inter;color:#21314F;background:#fff;outline:none">
+            <sc-for list="{{ locOptions }}" as="o" hint-placeholder-count="6"><option value="{{ o }}">{{ o }}</option></sc-for>
+          </select>
+        </div>
+
+        <div style="margin-left:auto;display:flex;align-items:center;gap:14px">
+          <button onClick="{{ logout }}" style="border:1px solid #DCE3EE;background:#fff;color:#5A6B85;font:600 12px Inter;padding:8px 13px;border-radius:10px">Sign out</button>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="text-align:right;line-height:1.2">
+              <div style="font:600 13px Inter;color:#21314F">{{ userName }}</div>
+              <div style="font:500 11px Inter;color:#8093AB">{{ roleLabel }}</div>
+            </div>
+            <div style="width:38px;height:38px;border-radius:999px;background:{{ avatarBg }};color:#fff;display:flex;align-items:center;justify-content:center;font:700 14px Poppins">{{ userInitials }}</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- PAGE BODY -->
+      <main class="cb-scroll" style="flex:1;overflow-y:auto;padding:26px 30px 48px">
+        <div style="max-width:1360px;margin:0 auto">
+
+          <!-- page heading -->
+          <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:22px">
+            <div>
+              <div style="font:600 11.5px Inter;letter-spacing:.1em;text-transform:uppercase;color:#4C84C4;margin-bottom:4px">{{ pageKicker }}</div>
+              <h1 style="font:600 26px Poppins;color:#21314F;margin:0">{{ pageTitle }}</h1>
+              <p style="font:500 13.5px Inter;color:#7A8AA3;margin:6px 0 0">{{ pageSub }}</p>
+            </div>
+            <div style="display:flex;gap:10px">
+              <sc-if value="{{ showExport }}">
+              <button style="border:1.5px solid #DCE3EE;background:#fff;color:#21314F;font:600 12.5px Inter;padding:10px 16px;border-radius:11px">Export CSV</button>
+              <button onClick="{{ exportReport }}" style="border:none;background:#BE6A45;color:#fff;font:600 12.5px Inter;padding:11px 18px;border-radius:11px;box-shadow:0 8px 18px -8px rgba(190,106,69,.6)">Export report (PDF)</button>
+              </sc-if>
+            </div>
+          </div>
+
+          <!-- ===== dynamic page content ===== -->
+          <div>{{ pageContent }}</div>
+
+        </div>
+      </main>
+    </div>
+  </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.state={
+      authed:false, role:'billing', nav:'client-billing',
+      dateRange:'30d', payer:'All payers', loc:'All levels',
+      loginEmail:'', loginPass:'', sidebarOpen:true,
+      opsTab:'Claims'
+    };
+    this.PAYERS=['All payers','AZ Complete Health','Care1st AZ','Mercy Care','UnitedHealthcare','Aetna','Self-pay'];
+    this.LOCS=['All levels','Outpatient','IOP','PHP','BHRF','Inpatient'];
+    this.CHART=['#4C84C4','#21314F','#BE6A45','#3F9C93','#7A6FB0','#2E9E73','#E0A32E','#8CA0BC'];
+  }
+
+  // ---------- brand helpers ----------
+  el=(t,p,...c)=>React.createElement(t,p,...c);
+  D(){return window.CHOLLA_DATA||null;}
+  componentDidMount(){if(!window.CHOLLA_DATA){this._poll=setInterval(()=>{if(window.CHOLLA_DATA){clearInterval(this._poll);this.forceUpdate();}},40);}}
+  componentWillUnmount(){if(this._poll)clearInterval(this._poll);}
+  comma(n){return Math.round(n).toLocaleString('en-US');}
+  fmtDate(iso){if(!iso)return '—';const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];const p=String(iso).split('-');if(p.length<3)return iso;return M[parseInt(p[1],10)-1]+' '+parseInt(p[2],10);}
+  nextPill(s){s=(s||'').toLowerCase();if(s.includes('appeal'))return 'Appeal';if(s.includes('resubmit')||s.includes('correct'))return 'Correct & resubmit';if(s.includes('write'))return 'Write-off';return 'Pending';}
+  money(n){return '$'+n.toLocaleString('en-US');}
+  moneyK(n){if(n>=1e6)return '$'+(n/1e6).toFixed(2)+'M';if(n>=1e3)return '$'+(n/1e3).toFixed(0)+'K';return '$'+n;}
+
+  icon(name){
+    const P={strokeWidth:2,fill:'none',stroke:'currentColor',strokeLinecap:'round',strokeLinejoin:'round',width:18,height:18,viewBox:'0 0 24 24'};
+    const paths={
+      billing:['M3 3v18h18','M7 14l3-3 3 3 5-6'],
+      ur:['M9 11l3 3L22 4','M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11'],
+      ops:['M4 6h16M4 12h16M4 18h10'],
+      import:['M12 3v12','M7 10l5 5 5-5','M4 21h16'],
+      plug:['M9 2v6M15 2v6','M7 8h10v4a5 5 0 0 1-10 0z','M12 17v5'],
+      settings:['M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z','M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 0 1-4 0v-.1A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 0 1 0-4h.1A1.6 1.6 0 0 0 2.6 7a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H7a1.6 1.6 0 0 0 1-1.5V1a2 2 0 0 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1a1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V7a1.6 1.6 0 0 0 1.5 1H23a2 2 0 0 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z'],
+      admin:['M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z'],
+    };
+    return this.el('svg',{...P},...(paths[name]||[]).map((d,i)=>this.el('path',{key:i,d})));
+  }
+
+  // ---------- CHARTS ----------
+  insight(text){return this.el('div',{style:{display:'flex',alignItems:'center',gap:10,background:'#F3F8FD',border:'1px solid #E1ECF8',borderRadius:12,padding:'11px 15px',marginTop:14}},
+    this.el('span',{style:{width:7,height:7,borderRadius:999,background:'#4C84C4',flex:'none'}}),
+    this.el('span',{style:{font:'600 13px Inter',color:'#2C4468',lineHeight:1.45}},text));}
+
+  card(title,sub,body,insightText,right){
+    return this.el('div',{style:{background:'#fff',border:'1px solid #DCE3EE',borderRadius:18,padding:'20px 22px'}},
+      this.el('div',{style:{display:'flex',alignItems:'flex-start',justifyContent:'space-between',gap:12,marginBottom:16}},
+        this.el('div',{},
+          this.el('div',{style:{font:'600 15.5px Poppins',color:'#21314F'}},title),
+          sub?this.el('div',{style:{font:'500 12px Inter',color:'#9AA8BD',marginTop:2}},sub):null),
+        right||null),
+      body,
+      insightText?this.insight(insightText):null);
+  }
+
+  vbars(data,opts){
+    opts=opts||{};const w=opts.w||520,h=opts.h||180,pad=26,bw=Math.max(6,(w-pad*2)/data.length*0.55);
+    const max=opts.max||Math.max(...data.map(d=>d.v))*1.15;
+    const gap=(w-pad*2)/data.length;
+    return this.el('svg',{viewBox:'0 0 '+w+' '+(h+26),style:{width:'100%',height:'auto',display:'block'}},
+      [0,.5,1].map((f,i)=>this.el('line',{key:'g'+i,x1:pad,x2:w-pad/2,y1:pad+(h-pad)*(1-f)*0+ (h-pad)*(1-f)+pad,y2:0,stroke:'none'})),
+      ...[0,.25,.5,.75,1].map((f,i)=>{const y=pad+(h-pad)*(1-f);return this.el('line',{key:'ln'+i,x1:pad,x2:w-pad/2,y1:y,y2:y,stroke:'#EEF3F9',strokeWidth:1});}),
+      ...data.map((d,i)=>{const bh=(d.v/max)*(h-pad);const x=pad+gap*i+(gap-bw)/2;const y=pad+(h-pad)-bh;
+        return this.el('g',{key:i},
+          this.el('rect',{x,y,width:bw,height:bh,rx:5,fill:d.c||'#4C84C4'}),
+          this.el('text',{x:x+bw/2,y:h+18,textAnchor:'middle',style:{font:'600 10.5px Inter',fill:'#9AA8BD'}},d.l));}));
+  }
+
+  groupedBars(cats,seriesA,seriesB,opts){
+    opts=opts||{};const w=opts.w||560,h=opts.h||190,pad=30;const n=cats.length;const gap=(w-pad*2)/n;const bw=Math.min(16,(gap*0.34));
+    const max=Math.max(...seriesA,...seriesB)*1.15;
+    const lineY=(v)=>pad+(h-pad)-(v/max)*(h-pad);
+    const linePts=seriesB.map((v,i)=>[pad+gap*i+gap/2,lineY(v)]);
+    return this.el('svg',{viewBox:'0 0 '+w+' '+(h+26),style:{width:'100%',height:'auto',display:'block'}},
+      ...[0,.25,.5,.75,1].map((f,i)=>{const y=pad+(h-pad)*(1-f);return this.el('line',{key:'ln'+i,x1:pad,x2:w-pad/2,y1:y,y2:y,stroke:'#EEF3F9',strokeWidth:1});}),
+      ...cats.map((c,i)=>{const bh=(seriesA[i]/max)*(h-pad);const x=pad+gap*i+gap/2-bw-2;const y=pad+(h-pad)-bh;
+        return this.el('g',{key:i},
+          this.el('rect',{x,y,width:bw,height:bh,rx:4,fill:'#DCE8F6'}),
+          this.el('text',{x:pad+gap*i+gap/2,y:h+18,textAnchor:'middle',style:{font:'600 10.5px Inter',fill:'#9AA8BD'}},c));}),
+      this.el('polyline',{points:linePts.map(p=>p.join(',')).join(' '),fill:'none',stroke:'#BE6A45',strokeWidth:2.5,strokeLinecap:'round',strokeLinejoin:'round'}),
+      ...linePts.map((p,i)=>this.el('circle',{key:'d'+i,cx:p[0],cy:p[1],r:3.5,fill:'#BE6A45'})));
+  }
+
+  line(points,opts){
+    opts=opts||{};const w=opts.w||560,h=opts.h||180,pad=28;const max=Math.max(...points.map(p=>p.v))*1.15,min=0;
+    const px=(i)=>pad+(w-pad*1.5)*(i/(points.length-1));
+    const py=(v)=>pad+(h-pad)-((v-min)/(max-min))*(h-pad);
+    const pts=points.map((p,i)=>[px(i),py(p.v)]);
+    const area=pts.map(p=>p.join(',')).join(' ');
+    return this.el('svg',{viewBox:'0 0 '+w+' '+(h+26),style:{width:'100%',height:'auto',display:'block'}},
+      this.el('defs',{},this.el('linearGradient',{id:'cbfill',x1:0,y1:0,x2:0,y2:1},
+        this.el('stop',{offset:'0%',stopColor:'#4C84C4',stopOpacity:.22}),this.el('stop',{offset:'100%',stopColor:'#4C84C4',stopOpacity:0}))),
+      ...[0,.25,.5,.75,1].map((f,i)=>{const y=pad+(h-pad)*(1-f);return this.el('line',{key:'ln'+i,x1:pad,x2:w-pad/2,y1:y,y2:y,stroke:'#EEF3F9',strokeWidth:1});}),
+      this.el('polygon',{points:pad+','+(pad+(h-pad))+' '+area+' '+(px(points.length-1))+','+(pad+(h-pad)),fill:'url(#cbfill)'}),
+      this.el('polyline',{points:area,fill:'none',stroke:'#4C84C4',strokeWidth:2.5,strokeLinecap:'round',strokeLinejoin:'round'}),
+      ...pts.map((p,i)=>this.el('circle',{key:'d'+i,cx:p[0],cy:p[1],r:3,fill:'#fff',stroke:'#4C84C4',strokeWidth:2})),
+      ...points.map((p,i)=>this.el('text',{key:'t'+i,x:px(i),y:h+18,textAnchor:'middle',style:{font:'600 10px Inter',fill:'#9AA8BD'}},p.l)));
+  }
+
+  stacked(cats,partsList,opts){
+    opts=opts||{};const w=opts.w||520,h=opts.h||180,pad=28;const gap=(w-pad*2)/cats.length;const bw=Math.min(26,gap*0.5);
+    const totals=partsList.map(p=>p.reduce((a,b)=>a+b.v,0));const max=Math.max(...totals)*1.2;
+    return this.el('svg',{viewBox:'0 0 '+w+' '+(h+26),style:{width:'100%',height:'auto',display:'block'}},
+      ...[0,.5,1].map((f,i)=>{const y=pad+(h-pad)*(1-f);return this.el('line',{key:'ln'+i,x1:pad,x2:w-pad/2,y1:y,y2:y,stroke:'#EEF3F9',strokeWidth:1});}),
+      ...cats.map((c,i)=>{let acc=0;const x=pad+gap*i+(gap-bw)/2;
+        return this.el('g',{key:i},
+          ...partsList[i].map((seg,j)=>{const sh=(seg.v/max)*(h-pad);const y=pad+(h-pad)-acc-sh;acc+=sh;
+            return this.el('rect',{key:j,x,y,width:bw,height:sh,rx:2,fill:seg.c});}),
+          this.el('text',{x:x+bw/2,y:h+18,textAnchor:'middle',style:{font:'600 10px Inter',fill:'#9AA8BD'}},c));}));
+  }
+
+  donut(segs,opts){
+    opts=opts||{};const size=opts.size||150,r=size/2-14,cx=size/2,cy=size/2,C=2*Math.PI*r;
+    const total=segs.reduce((a,s)=>a+s.v,0);let acc=0;
+    return this.el('div',{style:{display:'flex',alignItems:'center',gap:18,flexWrap:'wrap'}},
+      this.el('svg',{viewBox:'0 0 '+size+' '+size,style:{width:size,height:size,flex:'none'}},
+        this.el('circle',{cx,cy,r,fill:'none',stroke:'#EEF3F9',strokeWidth:16}),
+        ...segs.map((s,i)=>{const frac=s.v/total;const dash=frac*C;const off=acc*C;acc+=frac;
+          return this.el('circle',{key:i,cx,cy,r,fill:'none',stroke:s.c,strokeWidth:16,strokeDasharray:dash+' '+(C-dash),strokeDashoffset:-off,transform:'rotate(-90 '+cx+' '+cy+')',strokeLinecap:'butt'});}),
+        opts.center?this.el('text',{x:cx,y:cy-2,textAnchor:'middle',style:{font:'700 18px Poppins',fill:'#21314F'}},opts.center):null,
+        opts.centerSub?this.el('text',{x:cx,y:cy+14,textAnchor:'middle',style:{font:'500 9px Inter',fill:'#9AA8BD'}},opts.centerSub):null),
+      this.el('div',{style:{display:'flex',flexDirection:'column',gap:8,flex:1,minWidth:120}},
+        ...segs.map((s,i)=>this.el('div',{key:i,style:{display:'flex',alignItems:'center',gap:8}},
+          this.el('span',{style:{width:10,height:10,borderRadius:3,background:s.c,flex:'none'}}),
+          this.el('span',{style:{font:'500 12.5px Inter',color:'#5A6B85',flex:1}},s.l),
+          this.el('span',{style:{font:'700 12.5px Inter',color:'#21314F'}},opts.money?this.moneyK(s.v):(Math.round(s.v/total*100)+'%'))))));
+  }
+
+  hbars(rows,opts){
+    opts=opts||{};const max=Math.max(...rows.map(r=>r.v))*1.1;
+    return this.el('div',{style:{display:'flex',flexDirection:'column',gap:12}},
+      ...rows.map((r,i)=>this.el('div',{key:i},
+        this.el('div',{style:{display:'flex',justifyContent:'space-between',gap:10,marginBottom:5}},
+          this.el('span',{style:{font:'600 12.5px Inter',color:'#21314F',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',minWidth:0}},r.l),
+          this.el('span',{style:{font:'700 12.5px Inter',color:'#5A6B85',flex:'none'}},opts.money?this.moneyK(r.v):r.v)),
+        this.el('div',{style:{height:9,background:'#EEF3F9',borderRadius:999,overflow:'hidden'}},
+          this.el('div',{style:{height:'100%',width:(r.v/max*100)+'%',background:r.c||'#4C84C4',borderRadius:999}})))));
+  }
+
+  // ---------- pills ----------
+  pill(status){
+    const M={'Paid':['#E3F3EC','#1F7A56'],'Accepted':['#E3F3EC','#1F7A56'],'Submitted':['#DCE8F6','#2C5C94'],'Draft':['#EEF1F6','#5A6B85'],'Rejected':['#FBEEDD','#B5742A'],'Denied':['#F7E3E0','#B14233'],'Active':['#E3F3EC','#1F7A56'],'Expiring':['#FBEEDD','#B5742A'],'Expired':['#F7E3E0','#B14233'],'Pending':['#DCE8F6','#2C5C94'],'Appeal':['#EAE6F3','#5B4B94'],'Correct & resubmit':['#DCE8F6','#2C5C94'],'Write-off':['#EEF1F6','#5A6B85']};
+    const c=M[status]||['#eee','#333'];
+    return this.el('span',{style:{display:'inline-flex',alignItems:'center',gap:6,background:c[0],color:c[1],font:'600 12px Inter',padding:'4px 10px',borderRadius:999,whiteSpace:'nowrap'}},
+      this.el('span',{style:{width:6,height:6,borderRadius:999,background:c[1]}}),status);
+  }
+
+  kpiRow(kpis){
+    return this.el('div',{style:{display:'grid',gridTemplateColumns:'repeat('+(kpis.length>=6?4:kpis.length)+',minmax(0,1fr))',gap:14,marginBottom:22}},
+      ...kpis.map((k,i)=>this.el('div',{key:i,style:{background:'#fff',border:'1px solid #DCE3EE',borderRadius:16,padding:'16px 18px'}},
+        this.el('div',{style:{font:'500 11.5px Inter',letterSpacing:'.03em',textTransform:'uppercase',color:'#7A8AA3'}},k.label),
+        this.el('div',{style:{display:'flex',alignItems:'baseline',gap:8,marginTop:7}},
+          this.el('span',{style:{font:'700 27px Poppins',color:k.color||'#21314F',lineHeight:1}},k.value),
+          k.delta?this.el('span',{style:{font:'700 12px Inter',color:k.up?'#1F7A56':(k.down?'#B14233':'#7A8AA3')}},(k.up?'▲ ':(k.down?'▼ ':''))+k.delta):null),
+        k.sub?this.el('div',{style:{font:'500 11.5px Inter',color:'#9AA8BD',marginTop:6}},k.sub):null)));
+  }
+
+  table(cols,rows,opts){
+    opts=opts||{};const tmpl=cols.map(c=>c.w||'1fr').join(' ');
+    return this.el('div',{style:{background:'#fff',border:'1px solid #DCE3EE',borderRadius:16,overflow:'hidden'}},
+      this.el('div',{style:{display:'grid',gridTemplateColumns:tmpl,gap:12,padding:'13px 20px',background:'#F7FAFE',borderBottom:'1px solid #E7EDF5'}},
+        ...cols.map((c,i)=>this.el('div',{key:i,style:{font:'600 11px Inter',letterSpacing:'.04em',textTransform:'uppercase',color:'#7A8AA3',textAlign:c.align||'left'}},c.label))),
+      ...rows.map((r,i)=>this.el('div',{key:i,style:{display:'grid',gridTemplateColumns:tmpl,gap:12,padding:'13px 20px',borderBottom:'1px solid #F0F4F9',alignItems:'center'}},
+        ...cols.map((c,j)=>this.el('div',{key:j,style:{textAlign:c.align||'left',font:'500 13px Inter',color:'#3A4A66',minWidth:0}},r[c.key])))));
+  }
+
+  // ---------- navigation ----------
+  ssoLogin=()=>this.setState({authed:true,nav:this.defaultNav(this.state.role)});
+  emailLogin=()=>this.setState({authed:true,nav:this.defaultNav(this.state.role)});
+  onLoginEmail=(e)=>this.setState({loginEmail:e.target.value});
+  onLoginPass=(e)=>this.setState({loginPass:e.target.value});
+  pickRole=(r)=>this.setState({role:r});
+  defaultNav(r){return r==='admin'?'admin-home':'ops';}
+  logout=()=>this.setState({authed:false,loginPass:''});
+  go=(id)=>this.setState({nav:id});
+  toggleSidebar=()=>this.setState(s=>({sidebarOpen:!s.sidebarOpen}));
+  setDate=(d)=>this.setState({dateRange:d});
+  onPayer=(e)=>this.setState({payer:e.target.value});
+  onLoc=(e)=>this.setState({loc:e.target.value});
+  setOpsTab=(t)=>this.setState({opsTab:t});
+  exportReport=()=>{};
+
+  isMedicaid(){return ['AZ Complete Health','Care1st AZ','Mercy Care'].includes(this.state.payer);}
+
+  navConfig(){
+    const dash={label:'Dashboards',items:[
+      {id:'client-billing',label:'Billing Overview',icon:'billing'},
+      {id:'client-ur',label:'Utilization Review',icon:'ur',alert:'6'}]};
+    const ops={label:'Operations',items:[
+      {id:'ops',label:'Team Ops',icon:'ops'},
+      {id:'imports',label:'Import Wizard',icon:'import'}]};
+    const plat={label:'Platform',items:[
+      {id:'connections',label:'Connections',icon:'plug'},
+      {id:'settings',label:'Settings',icon:'settings'},
+      {id:'admin-home',label:'Admin Home',icon:'admin'}]};
+    if(this.state.role==='client')return [dash];
+    if(this.state.role==='billing')return [dash,ops];
+    return [dash,ops,plat];
+  }
+
+  pageMeta(){
+    const M={
+      'client-billing':{kicker:'Dashboard',title:'Billing Overview',sub:'Simulated dataset · Jan 1 – Jun 30, 2026 · '+this.state.payer,export:true},
+      'client-ur':{kicker:'Dashboard',title:'Utilization Review & Authorizations',sub:'Auth health and census · as of Jun 30, 2026',export:true},
+      'ops':{kicker:'Operations',title:'Team Ops',sub:'Work queues and data entry',export:false},
+      'imports':{kicker:'Operations',title:'Import Wizard',sub:'CSV · 835 · 837 · clearinghouse export',export:false},
+      'connections':{kicker:'Platform',title:'Connections & Automations',sub:'Integration control room',export:false},
+      'settings':{kicker:'Platform',title:'Settings',sub:'Organization, payers, codes, users',export:false},
+      'admin-home':{kicker:'Platform',title:'Admin Control Panel',sub:'System health, audit log, data quality',export:false}
+    };
+    return M[this.state.nav]||M['client-billing'];
+  }
+  rangeLabel(){return {'Today':'Today','7d':'Last 7 days','30d':'Last 30 days','MTD':'Month to date','QTD':'Quarter to date','Custom':'Custom range'}[this.state.dateRange];}
+
+  renderVals(){
+    const st=this.state;
+    const initials=(nm)=>nm.split(' ').map(w=>w[0]).slice(0,2).join('');
+    const roleMeta={client:{name:'Dana Alvarez',label:'Client Viewer · Cholla Leadership',av:'#4C84C4'},billing:{name:'Marcus Webb',label:'Billing Team',av:'#BE6A45'},admin:{name:'Ruth Okafor',label:'Platform Admin',av:'#21314F'}};
+    const rm=roleMeta[st.role];
+
+    const groups=this.navConfig().map(g=>({label:g.label,items:g.items.map(it=>{
+      const active=it.id===st.nav;
+      return {label:it.label,icon:this.el('span',{style:{color:active?'#fff':'#8FA6C9'}},this.icon(it.icon)),bg:active?'#4C84C4':'transparent',fg:active?'#fff':'#C7D3E5',onClick:()=>this.go(it.id),showAlert:!!it.alert&&st.role!=='client'?false:!!it.alert,alert:it.alert};
+    })}));
+
+    const meta=this.pageMeta();
+
+    return {
+      showLogin:!st.authed, showApp:st.authed,
+      roleChips:['billing','admin'].map(r=>({label:r==='billing'?'Billing':'Admin',bg:st.role===r?'#21314F':'#fff',fg:st.role===r?'#fff':'#5A6B85',bd:st.role===r?'#21314F':'#DCE3EE',onClick:()=>this.pickRole(r)})),
+      ssoLogin:this.ssoLogin, emailLogin:this.emailLogin, loginEmail:st.loginEmail, loginPass:st.loginPass, onLoginEmail:this.onLoginEmail, onLoginPass:this.onLoginPass,
+
+      sidebarOpen:st.sidebarOpen, sidebarW:st.sidebarOpen?'246px':'74px', sidebarLogoH:st.sidebarOpen?'30px':'20px', navGroups:groups,
+      toggleSidebar:this.toggleSidebar, collapseIcon:st.sidebarOpen?'«':'»',
+      logout:this.logout,
+      userName:rm.name, roleLabel:rm.label, userInitials:initials(rm.name), avatarBg:rm.av,
+
+      dateSeg:['Today','7d','30d','MTD','QTD','Custom'].map(d=>({label:d,bg:st.dateRange===d?'#21314F':'transparent',fg:st.dateRange===d?'#fff':'#5A6B85',onClick:()=>this.setDate(d)})),
+      payerFilter:st.payer, onPayer:this.onPayer, payerOptions:this.PAYERS,
+      locFilter:st.loc, onLoc:this.onLoc, locOptions:this.LOCS,
+
+      pageKicker:meta.kicker, pageTitle:meta.title, pageSub:meta.sub, showExport:meta.export, exportReport:this.exportReport,
+      pageContent:this.renderPage()
+    };
+  }
+
+  renderPage(){
+    const nav=this.state.nav;
+    if(nav==='client-billing')return this.pageBilling();
+    if(nav==='client-ur')return this.pageUR();
+    if(nav==='ops')return this.pageOps();
+    if(nav==='imports')return this.pageImports();
+    if(nav==='connections')return this.pageConnections();
+    if(nav==='settings')return this.pageSettings();
+    if(nav==='admin-home')return this.pageAdmin();
+    return null;
+  }
+
+  grid2(a,b){return this.el('div',{style:{display:'grid',gridTemplateColumns:'minmax(0,1fr) minmax(0,1fr)',gap:16,marginBottom:16}},a,b);}
+  grid1(a){return this.el('div',{style:{marginBottom:16}},a);}
+
+  pageBilling(){
+    const D=this.D();if(!D)return this.loading();
+    const k=D.kpi;const PAL=this.CHART;
+    const kpis=[
+      {label:'Claims Billed',value:this.comma(k.claimsBilled),sub:'Jan–Jun 2026'},
+      {label:'Total Charges',value:this.moneyK(k.totalCharges),sub:'gross billed'},
+      {label:'Total Collected',value:this.moneyK(k.totalCollected),color:'#1F7A56',sub:'≈ $14.9M annualized'},
+      {label:'Net Collection Rate',value:k.netCR+'%',color:'#4C84C4',sub:'of allowed'},
+      {label:'Denial Rate',value:k.denialRate+'%',sub:'of adjudicated'},
+      {label:'Rejection Rate',value:k.rejectionRate+'%',sub:'clearinghouse'},
+      {label:'Days in A/R',value:String(k.daysAR),sub:'open A/R '+this.moneyK(k.openAR)},
+      {label:'Clean Claim Rate',value:k.cleanClaimRate+'%',color:'#4C84C4',sub:'first pass'}
+    ];
+    const volume=D.monthly.map(m=>({l:m.m,v:m.claims}));
+    const cats=D.monthly.map(m=>m.m);
+    const charges=D.monthly.map(m=>m.charges);const collected=D.monthly.map(m=>m.collected);
+    const denParts=D.denialTrend.map(t=>[{v:t.denials,c:'#BE6A45'},{v:t.rejections,c:'#E0A32E'}]);
+    const denReasons=D.denialReasons.map((r,i)=>({l:r.code+' '+(r.desc.length>18?r.desc.slice(0,18)+'…':r.desc),v:r.count,c:PAL[i%PAL.length]}));
+    const totalDen=D.denialReasons.reduce((s,r)=>s+r.count,0);
+    let pm=D.payerMix.slice(0,6);const pmOther=D.payerMix.slice(6).reduce((s,p)=>s+p.collected,0);
+    const payerMix=pm.map((p,i)=>({l:p.name,v:p.collected,c:PAL[i%PAL.length]}));
+    if(pmOther>0)payerMix.push({l:'Other payers',v:pmOther,c:'#8CA0BC'});
+    const medicaidShare=Math.round(D.payerMix.filter(p=>['AZ Complete Health','Mercy Care','Care1st AZ','Banner UFC','UHC Community','Molina AZ'].includes(p.name)).reduce((s,p)=>s+p.collected,0)/D.kpi.totalCollected*100);
+    const codes=D.serviceRevenue.map(c=>({l:c.code+' · '+c.desc,v:c.amount,c:'#4C84C4'}));
+    const topCodePct=Math.round(D.serviceRevenue[0].amount/D.serviceRevenue.reduce((s,c)=>s+c.amount,0)*100);
+    const cvc=D.censusVsClaims;
+    const census=[{l:'Billable days',v:cvc.eligible,c:'#DCE8F6'},{l:'Claims built',v:cvc.billed,c:'#4C84C4'}];
+    const leakDollars=Math.round(cvc.unbilled*235);
+
+    const blocks=[
+      this.card('Claims volume over time','Monthly submitted claims · Jan–Jun 2026',this.line(volume,{h:180}),'Volume holds ~3,100 claims/mo; the June dip reflects the open-A/R tail, not lower activity.'),
+      this.card('Charges vs. Collected','Gross charges (bars) vs. collected (line), by month',this.groupedBars(cats,charges,collected,{h:190}),'Gross-to-net gap is contractual: Medicaid allowed rates run ~37% of charges, netting '+k.netCR+'% of allowed.'),
+      this.card('Denials & rejections over time','Payer denials + clearinghouse rejections, monthly',this.stacked(cats,denParts,{h:170}),'Rejections ('+k.rejectionRate+'%) stop at the clearinghouse; denials ('+k.denialRate+'%) are adjudicated by the payer.'),
+      this.card('Denial reasons','CARC breakdown · '+this.comma(totalDen)+' denials',this.donut(denReasons,{size:150,center:this.comma(totalDen),centerSub:'denials'}),'CO-197 (auth absent) leads — the top preventable driver across all payers.'),
+      this.card('Payer mix','Collections by payer · 6-mo',this.donut(payerMix,{size:150,money:true,center:this.moneyK(k.totalCollected),centerSub:'collected'}),'AHCCCS Medicaid plans account for '+medicaidShare+'% of collections.'),
+      this.card('Revenue by service code','Top CPT/HCPCS by allowed revenue',this.hbars(codes,{money:true}),'BHRF residential per-diem (H0018) is the single largest revenue line at '+topCodePct+'%.')
+    ];
+
+    const out=[this.kpiRow(kpis)];
+    out.push(this.grid1(blocks[0]));
+    out.push(this.grid1(blocks[1]));
+    out.push(this.grid2(blocks[2],blocks[3]));
+    out.push(this.grid2(blocks[4],blocks[5]));
+    if(!this.isMedicaid()){
+      const ps=D.patientSplit;const ptPct=Math.round(ps.patient/(ps.insurance+ps.patient)*100);
+      const pr=[{l:'Insurance paid',v:ps.insurance,c:'#4C84C4'},{l:'Patient responsibility',v:ps.patient,c:'#BE6A45'}];
+      out.push(this.grid1(this.card('Patient responsibility split','Insurance vs. patient portion (copay + coinsurance + deductible)',this.donut(pr,{size:150,money:true,center:ptPct+'%',centerSub:'patient'}),'Patient portion is '+ptPct+'% of collections — concentrated in the commercial book (Medicaid pt-resp ≈ $0).')));
+    }
+    out.push(this.grid1(this.card('Claims Built vs. Census','The leakage view — billable program-days vs. claims built',
+      this.el('div',{},this.vbars(census,{h:150,max:cvc.eligible*1.15}),
+        this.el('div',{style:{marginTop:6,display:'flex',gap:10,alignItems:'center',flexWrap:'wrap'}},
+          this.el('span',{style:{background:'#FBEEDD',color:'#B5742A',font:'700 12px Inter',padding:'6px 12px',borderRadius:999}},this.comma(cvc.unbilled)+' unbilled billable days'),
+          this.el('span',{style:{font:'600 12.5px Inter',color:'#5A6B85'}},'≈ '+this.moneyK(leakDollars)+' in allowed revenue potentially left on the floor'))),
+      'Close the census-to-claims gap and recover an estimated '+this.moneyK(leakDollars)+' in billable days across the period.')));
+    return this.el('div',{},...out);
+  }
+  loading(){return this.el('div',{style:{padding:'80px 20px',textAlign:'center',font:'500 14px Inter',color:'#9AA8BD'}},'Loading dataset…');}
+
+  pageUR(){
+    const D=this.D();if(!D)return this.loading();
+    const u=D.ur;const PAL=this.CHART;
+    const kpis=[
+      {label:'Active Authorizations',value:this.comma(u.activeAuth),sub:'across all LOC'},
+      {label:'Units / Days Remaining',value:this.comma(u.unitsRemaining),sub:'aggregate authorized'},
+      {label:'Auths Expiring ≤5 Days',value:String(u.expiring5),color:'#C1453B',delta:'act now',down:true},
+      {label:'Auth Denial Rate',value:u.authDenialRate+'%',sub:'UM / medical necessity'},
+      {label:'Avg LOS · IOP',value:u.avgLosIOP+'d',sub:'IOP level of care'},
+      {label:'Current Census',value:this.comma(u.currentCensus),sub:'clients on service'}
+    ];
+    const locColor={OP:'#4C84C4',IOP:'#21314F',PHP:'#3F9C93',BHRF:'#BE6A45',Inpatient:'#7A6FB0'};
+    const census=D.censusByLOC.map(c=>({l:c.loc,v:c.count,c:locColor[c.loc]||'#4C84C4'}));
+    const censusTop=D.censusByLOC.slice(0,2).reduce((s,c)=>s+c.count,0);
+    const censusPct=Math.round(censusTop/u.currentCensus*100);
+    const util=D.authUtil.map(a=>({l:'Auth '+a.auth+' · '+a.loc,auth:a.authorized,used:a.used}));
+    const runway=D.reauthRunway.map(a=>({id:a.auth,loc:a.loc,payer:a.payer,days:a.days}));
+
+    const utilBody=this.el('div',{style:{display:'flex',flexDirection:'column',gap:14}},
+      ...util.map((u,i)=>{const rem=u.auth-u.used;const pct=Math.round(u.used/u.auth*100);const over=pct>=90;
+        return this.el('div',{key:i},
+          this.el('div',{style:{display:'flex',justifyContent:'space-between',gap:10,marginBottom:5}},
+            this.el('span',{style:{font:'600 12.5px Inter',color:'#21314F',whiteSpace:'nowrap',overflow:'hidden',textOverflow:'ellipsis',minWidth:0}},u.l),
+            this.el('span',{style:{font:'600 12px Inter',color:over?'#B14233':'#5A6B85',flex:'none'}},u.used+' / '+u.auth+' units · '+rem+' left')),
+          this.el('div',{style:{height:10,background:'#EEF3F9',borderRadius:999,overflow:'hidden'}},
+            this.el('div',{style:{height:'100%',width:pct+'%',background:over?'#C1453B':(pct<50?'#E0A32E':'#4C84C4'),borderRadius:999}})));}));
+
+    const maxRunway=Math.max(14,...runway.map(r=>r.days));
+    const runwayBody=this.el('div',{style:{display:'flex',flexDirection:'column',gap:9}},
+      ...runway.map((r,i)=>{const flag=r.days<=5;const maxD=maxRunway;
+        return this.el('div',{key:i,style:{display:'grid',gridTemplateColumns:'96px 60px 1fr 96px',gap:12,alignItems:'center',padding:'8px 12px',background:flag?'#FCF0EC':'#F7FAFE',borderRadius:11,border:'1px solid '+(flag?'#F1D6CE':'#E7EDF5')}},
+          this.el('span',{style:{font:'700 12.5px Inter',color:'#21314F'}},'#'+r.id),
+          this.el('span',{style:{font:'600 11.5px Inter',color:'#5A6B85'}},r.loc),
+          this.el('div',{style:{height:8,background:'#E7EDF5',borderRadius:999,overflow:'hidden'}},
+            this.el('div',{style:{height:'100%',width:((maxD-r.days)/maxD*100)+'%',background:flag?'#C1453B':'#4C84C4',borderRadius:999}})),
+          this.el('span',{style:{font:'700 12px Inter',color:flag?'#C1453B':'#5A6B85',textAlign:'right'}},r.days+' day'+(r.days===1?'':'s')));}));
+
+    const losMax=Math.max(...D.losByLOC.map(b=>b.hi),1);
+    const losBody=this.el('div',{style:{display:'flex',flexDirection:'column',gap:13}},
+      ...D.losByLOC.map((b,i)=>{
+        const scale=v=>v/losMax*100;
+        return this.el('div',{key:i},
+          this.el('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:5}},
+            this.el('span',{style:{font:'600 12.5px Inter',color:'#21314F'}},b.l),
+            this.el('span',{style:{font:'600 11.5px Inter',color:'#9AA8BD'}},'median '+b.med+'d')),
+          this.el('div',{style:{position:'relative',height:16}},
+            this.el('div',{style:{position:'absolute',top:7,left:scale(b.lo)+'%',width:(scale(b.hi)-scale(b.lo))+'%',height:2,background:'#C9D6E8'}}),
+            this.el('div',{style:{position:'absolute',top:2,left:scale(b.q1)+'%',width:(scale(b.q3)-scale(b.q1))+'%',height:12,background:'#DCE8F6',border:'1px solid #4C84C4',borderRadius:4}}),
+            this.el('div',{style:{position:'absolute',top:0,left:scale(b.med)+'%',width:3,height:16,background:'#21314F',borderRadius:2}})));}));
+
+    const out=[this.kpiRow(kpis)];
+    out.push(this.el('div',{style:{display:'flex',alignItems:'center',gap:12,background:'#FCF0EC',border:'1px solid #F1D6CE',borderRadius:14,padding:'14px 18px',marginBottom:18}},
+      this.el('span',{style:{width:9,height:9,borderRadius:999,background:'#C1453B',animation:'cb-pulse 1.4s infinite',flex:'none'}}),
+      this.el('span',{style:{font:'700 13.5px Inter',color:'#8A2E24'}},u.expiring5+' authorizations expire within 5 days — members at risk of unbillable days. Start reauth now.')));
+    out.push(this.grid2(
+      this.card('Census by level of care','Active clients per LOC',this.vbars(census,{h:170}),D.censusByLOC[0].loc+' + '+(D.censusByLOC[1]?D.censusByLOC[1].loc:'')+' make up '+censusPct+'% of census — the auth-intensive core of the continuum.'),
+      this.card('Authorization utilization','Units used vs. authorized · top active auths',utilBody,'Auths above 90% utilization should be flagged for reauthorization before units run out.')));
+    out.push(this.grid1(this.card('Reauth runway','Active authorizations by days to expiration — anything ≤5 days is flagged',runwayBody,'The highest-leverage save in the platform: '+u.expiring5+' active auths expire within 5 days.')));
+    out.push(this.grid2(
+      this.card('Length of stay by LOC','Distribution (box = interquartile, line = median), days',losBody,'BHRF residential shows the widest LOS spread — reauth cadence varies most here.'),
+      this.card('Auth denials vs. claim denials','Two different stages — clarified',
+        this.el('div',{style:{display:'flex',flexDirection:'column',gap:14}},
+          this.el('div',{style:{background:'#F7FAFE',border:'1px solid #E7EDF5',borderRadius:12,padding:'14px 16px'}},
+            this.el('div',{style:{font:'700 22px Poppins',color:'#BE6A45'}},u.authDenialRate+'%'),
+            this.el('div',{style:{font:'600 12.5px Inter',color:'#21314F',marginTop:2}},'Authorization denial rate'),
+            this.el('div',{style:{font:'500 11.5px Inter',color:'#9AA8BD',marginTop:3}},'Utilization-management / medical-necessity stage — before or during service')),
+          this.el('div',{style:{background:'#F7FAFE',border:'1px solid #E7EDF5',borderRadius:12,padding:'14px 16px'}},
+            this.el('div',{style:{font:'700 22px Poppins',color:'#21314F'}},D.kpi.denialRate+'%'),
+            this.el('div',{style:{font:'600 12.5px Inter',color:'#21314F',marginTop:2}},'Claim denial rate'),
+            this.el('div',{style:{font:'500 11.5px Inter',color:'#9AA8BD',marginTop:3}},'Claim-adjudication stage — after the claim is submitted to the payer'))),
+        'Different stages, different fixes: UM denials need clinical documentation; claim denials need billing edits.')));
+    return this.el('div',{},...out);
+  }
+
+  pageOps(){
+    const D=this.D();if(!D)return this.loading();
+    const O=D.ops;
+    const tabs=['Claims','Denials','Rejections','Payments','Authorizations'];
+    const st=this.state;
+    const tabBar=this.el('div',{style:{display:'flex',gap:6,marginBottom:16,flexWrap:'wrap'}},
+      ...tabs.map(t=>{const a=t===st.opsTab;const counts={Claims:this.comma(D.counts.claims),Denials:this.comma(D.counts.denials),Rejections:this.comma(D.counts.rejections),Payments:this.comma(D.counts.payments),Authorizations:this.comma(D.counts.auths)};
+        return this.el('button',{key:t,onClick:()=>this.setOpsTab(t),style:{border:'1.5px solid '+(a?'#21314F':'#DCE3EE'),background:a?'#21314F':'#fff',color:a?'#fff':'#5A6B85',font:'600 13px Inter',padding:'9px 16px',borderRadius:11,display:'flex',alignItems:'center',gap:8}},
+          t,this.el('span',{style:{background:a?'rgba(255,255,255,.2)':'#EEF4FB',color:a?'#fff':'#7A8AA3',font:'700 11px Inter',padding:'1px 7px',borderRadius:999}},counts[t]));}));
+
+    let tableEl;
+    if(st.opsTab==='Claims'){
+      const cols=[{key:'id',label:'Claim',w:'1fr'},{key:'member',label:'Member',w:'0.8fr'},{key:'payer',label:'Payer',w:'1.1fr'},{key:'loc',label:'LOC',w:'0.6fr'},{key:'dos',label:'DOS',w:'0.9fr'},{key:'charge',label:'Charge',align:'right',w:'0.8fr'},{key:'status',label:'Status',w:'0.9fr'}];
+      const rows=O.claims.map(r=>({id:this.el('span',{style:{font:'600 12.5px Inter',color:'#21314F'}},r.id),member:r.member,payer:r.payer,loc:r.loc,dos:this.fmtDate(r.dos),charge:this.el('span',{style:{fontWeight:700,color:'#21314F'}},this.money(r.charge)),status:this.pill(r.status)}));
+      tableEl=this.table(cols,rows);
+    } else if(st.opsTab==='Denials'){
+      const cols=[{key:'id',label:'Claim',w:'1fr'},{key:'payer',label:'Payer',w:'1fr'},{key:'reason',label:'Reason',w:'1.5fr'},{key:'amt',label:'Amount',align:'right',w:'0.7fr'},{key:'age',label:'Age',w:'0.5fr'},{key:'next',label:'Next action',w:'1.1fr'},{key:'who',label:'Assignee',w:'0.8fr'}];
+      const rows=O.denials.map(r=>({id:this.el('span',{style:{font:'600 12.5px Inter',color:'#21314F'}},r.id),payer:r.payer,reason:r.reason,amt:this.el('span',{style:{fontWeight:700,color:'#B14233'}},this.money(r.amt)),age:r.age,next:this.pill(this.nextPill(r.next)),who:r.who}));
+      tableEl=this.table(cols,rows);
+    } else if(st.opsTab==='Rejections'){
+      const cols=[{key:'id',label:'Claim',w:'1fr'},{key:'src',label:'Clearinghouse',w:'1fr'},{key:'err',label:'Edit / error',w:'1.8fr'},{key:'amt',label:'Amount',align:'right',w:'0.7fr'},{key:'action',label:'',align:'right',w:'1fr'}];
+      const rows=O.rejections.map(r=>({id:this.el('span',{style:{font:'600 12.5px Inter',color:'#21314F'}},r.id),src:r.src,err:this.el('span',{style:{color:'#B5742A'}},r.err),amt:this.el('span',{style:{fontWeight:700,color:'#21314F'}},this.money(r.amt)),action:this.el('button',{style:{border:'none',background:'#4C84C4',color:'#fff',font:'600 11.5px Inter',padding:'6px 12px',borderRadius:9}},'Fix & resubmit')}));
+      tableEl=this.table(cols,rows);
+    } else if(st.opsTab==='Payments'){
+      const cols=[{key:'id',label:'Claim',w:'1fr'},{key:'payer',label:'Payer',w:'1.2fr'},{key:'paid',label:'Payer paid',align:'right',w:'0.9fr'},{key:'pt',label:'Patient',align:'right',w:'0.8fr'},{key:'adj',label:'Adjustment',align:'right',w:'0.9fr'},{key:'action',label:'',align:'right',w:'0.8fr'}];
+      const rows=O.payments.map(r=>({id:this.el('span',{style:{font:'600 12.5px Inter',color:'#21314F'}},r.id),payer:r.payer,paid:this.el('span',{style:{fontWeight:700,color:'#1F7A56'}},this.money(r.paid)),pt:this.money(r.pt),adj:this.money(r.adj),action:this.el('button',{style:{border:'none',background:'#BE6A45',color:'#fff',font:'600 11.5px Inter',padding:'6px 12px',borderRadius:9}},'Post')}));
+      tableEl=this.table(cols,rows);
+    } else {
+      const cols=[{key:'id',label:'Auth',w:'1.1fr'},{key:'member',label:'Member',w:'0.8fr'},{key:'payer',label:'Payer',w:'1.1fr'},{key:'loc',label:'LOC',w:'0.6fr'},{key:'units',label:'Used / Auth',align:'right',w:'0.9fr'},{key:'end',label:'Expires',w:'0.8fr'},{key:'status',label:'Status',w:'0.9fr'}];
+      const rows=O.auths.map(r=>({id:this.el('span',{style:{font:'600 12.5px Inter',color:'#21314F'}},r.id),member:r.member,payer:r.payer,loc:r.loc,units:this.el('span',{style:{fontWeight:700,color:'#21314F'}},r.units),end:this.fmtDate(r.end),status:this.pill(r.status)}));
+      tableEl=this.table(cols,rows);
+    }
+
+    const entryTool=(title,desc,btn,btnColor)=>this.el('div',{style:{background:'#fff',border:'1px solid #DCE3EE',borderRadius:16,padding:'18px 20px',display:'flex',flexDirection:'column'}},
+      this.el('div',{style:{font:'600 14.5px Poppins',color:'#21314F'}},title),
+      this.el('div',{style:{font:'500 12px Inter',color:'#9AA8BD',margin:'5px 0 16px',lineHeight:1.5,flex:1}},desc),
+      this.el('button',{style:{border:'none',background:btnColor,color:'#fff',font:'600 12.5px Inter',padding:'11px',borderRadius:11,width:'100%'}},btn));
+
+    const autoTiles=[
+      {name:'Waystar clearinghouse',time:'2 min ago',recs:'312 claims',err:0},
+      {name:'Kipu EHR feed',time:'18 min ago',recs:'176 census events',err:0},
+      {name:'n8n · denial webhook',time:'1 hr ago',recs:'38 denials',err:2}
+    ];
+
+    return this.el('div',{},
+      this.el('div',{style:{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:14,marginBottom:22}},
+        ...autoTiles.map((a,i)=>this.el('div',{key:i,style:{background:'#fff',border:'1px solid #DCE3EE',borderRadius:16,padding:'16px 18px'}},
+          this.el('div',{style:{display:'flex',alignItems:'center',justifyContent:'space-between'}},
+            this.el('span',{style:{font:'600 13px Poppins',color:'#21314F'}},a.name),
+            this.el('span',{style:{width:9,height:9,borderRadius:999,background:a.err?'#E0A32E':'#2E9E73'}})),
+          this.el('div',{style:{font:'500 11.5px Inter',color:'#9AA8BD',marginTop:6}},'Last sync '+a.time+' · '+a.recs),
+          a.err?this.el('div',{style:{font:'600 11.5px Inter',color:'#B5742A',marginTop:6}},a.err+' rows need review'):this.el('div',{style:{font:'600 11.5px Inter',color:'#1F7A56',marginTop:6}},'Clean'))) ),
+      this.el('div',{style:{font:'600 15px Poppins',color:'#21314F',margin:'4px 0 12px'}},'Work queue'),
+      tabBar,tableEl,
+      this.el('div',{style:{display:'flex',gap:10,marginTop:14,flexWrap:'wrap'}},
+        ...['Assign','Mark worked','Resubmit','Export'].map(b=>this.el('button',{key:b,style:{border:'1.5px solid #DCE3EE',background:'#fff',color:'#5A6B85',font:'600 12.5px Inter',padding:'9px 15px',borderRadius:10}},b))),
+      this.el('div',{style:{font:'600 15px Poppins',color:'#21314F',margin:'26px 0 12px'}},'Entry tools'),
+      this.el('div',{style:{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:14}},
+        entryTool('New Claim','Member, payer, LOC, service codes, units, DOS, provider, charge, auth link.','Create claim','#4C84C4'),
+        entryTool('Post Payment','Claim ref, payer paid, patient responsibility split, adjustment, balance.','Post payment','#4C84C4'),
+        entryTool('Log Denial / Rejection','Type, CARC/RARC reason, amount, next action, assignee.','Log denial','#4C84C4'),
+        entryTool('New / Update Auth','Member, payer, LOC, auth #, CON/RON, units, dates, countdown.','Manage auth','#BE6A45')));
+  }
+
+  pageImports(){
+    const steps=['Upload','Map columns','Validate','Preview','Commit'];
+    return this.el('div',{},
+      this.el('div',{style:{display:'flex',alignItems:'center',gap:0,marginBottom:22}},
+        ...steps.map((s,i)=>this.el('div',{key:i,style:{display:'flex',alignItems:'center',flex:i<steps.length-1?1:'none'}},
+          this.el('div',{style:{display:'flex',alignItems:'center',gap:9}},
+            this.el('div',{style:{width:28,height:28,borderRadius:999,background:i<=2?'#4C84C4':'#E7EDF5',color:i<=2?'#fff':'#9AA8BD',display:'flex',alignItems:'center',justifyContent:'center',font:'700 12px Poppins'}},i+1),
+            this.el('span',{style:{font:'600 12.5px Inter',color:i<=2?'#21314F':'#9AA8BD'}},s)),
+          i<steps.length-1?this.el('div',{style:{flex:1,height:2,background:i<2?'#4C84C4':'#E7EDF5',margin:'0 12px'}}):null))),
+      this.card('Validate — 837P import · claims_june.csv','624 rows parsed · mapping profile "Waystar 837P"',
+        this.el('div',{},
+          this.el('div',{style:{display:'flex',gap:12,marginBottom:16}},
+            ...[{n:'591',l:'Valid rows',c:'#1F7A56'},{n:'21',l:'Warnings',c:'#B5742A'},{n:'12',l:'Errors',c:'#B14233'}].map((b,i)=>
+              this.el('div',{key:i,style:{flex:1,background:'#F7FAFE',border:'1px solid #E7EDF5',borderRadius:12,padding:'14px 16px'}},
+                this.el('div',{style:{font:'700 24px Poppins',color:b.c}},b.n),
+                this.el('div',{style:{font:'500 12px Inter',color:'#5A6B85',marginTop:2}},b.l)))),
+          this.table([{key:'row',label:'Row',w:'0.4fr'},{key:'field',label:'Field',w:'1fr'},{key:'issue',label:'Issue',w:'1.6fr'},{key:'sev',label:'Severity',w:'0.7fr'}],
+            [['118','service_code','H0016 not in code library','Error'],['204','payer_id','Unmapped payer "AZCH-2"','Error'],['337','units','Units 0 — expected ≥1','Warning'],['452','dob','Masked value missing','Warning']].map(r=>({row:r[0],field:this.el('span',{style:{fontWeight:600,color:'#21314F'}},r[1]),issue:r[2],sev:this.pill(r[3]==='Error'?'Denied':'Rejected')})))),
+        'Fix 12 errors before commit — 591 clean rows are ready to import now.',
+        this.el('button',{style:{border:'none',background:'#BE6A45',color:'#fff',font:'600 12.5px Inter',padding:'10px 18px',borderRadius:11}},'Commit 591 rows')));
+  }
+
+  pageConnections(){
+    const sources=[
+      {name:'Waystar clearinghouse',type:'Claims · 837 / 835',status:'Connected',time:'2 min ago',recs:'312',err:0,on:true},
+      {name:'Kipu EHR',type:'Census · demographics',status:'Connected',time:'18 min ago',recs:'176',err:0,on:true},
+      {name:'n8n automations',type:'Denial + auth webhooks',status:'Connected',time:'1 hr ago',recs:'38',err:2,on:true},
+      {name:'Make.com',type:'Report delivery',status:'Paused',time:'—',recs:'0',err:0,on:false},
+      {name:'Manual entry',type:'Forms · Import Wizard',status:'Always on',time:'live',recs:'44',err:0,on:true}
+    ];
+    return this.el('div',{},
+      this.el('div',{style:{display:'grid',gridTemplateColumns:'repeat(auto-fill,minmax(300px,1fr))',gap:16,marginBottom:22}},
+        ...sources.map((s,i)=>this.el('div',{key:i,style:{background:'#fff',border:'1px solid #DCE3EE',borderRadius:18,padding:'18px 20px'}},
+          this.el('div',{style:{display:'flex',alignItems:'flex-start',justifyContent:'space-between',marginBottom:12}},
+            this.el('div',{},this.el('div',{style:{font:'600 15px Poppins',color:'#21314F'}},s.name),
+              this.el('div',{style:{font:'500 12px Inter',color:'#9AA8BD',marginTop:2}},s.type)),
+            this.el('div',{style:{width:42,height:24,borderRadius:999,background:s.on?'#2E9E73':'#D3DCE8',position:'relative',flex:'none'}},
+              this.el('div',{style:{position:'absolute',top:3,left:s.on?21:3,width:18,height:18,borderRadius:999,background:'#fff',transition:'left .15s'}}))),
+          this.el('div',{style:{display:'flex',alignItems:'center',gap:8,marginBottom:12}},
+            this.el('span',{style:{width:8,height:8,borderRadius:999,background:s.err?'#E0A32E':(s.on?'#2E9E73':'#9AA8BD')}}),
+            this.el('span',{style:{font:'600 12.5px Inter',color:'#5A6B85'}},s.status+' · last sync '+s.time)),
+          this.el('div',{style:{display:'flex',gap:18}},
+            this.el('div',{},this.el('div',{style:{font:'700 17px Poppins',color:'#21314F'}},s.recs),this.el('div',{style:{font:'500 11px Inter',color:'#9AA8BD'}},'records today')),
+            this.el('div',{},this.el('div',{style:{font:'700 17px Poppins',color:s.err?'#B5742A':'#1F7A56'}},s.err),this.el('div',{style:{font:'500 11px Inter',color:'#9AA8BD'}},'errors'))))) ),
+      this.grid2(
+        this.card('API keys','Inbound data endpoints',
+          this.el('div',{style:{display:'flex',flexDirection:'column',gap:10}},
+            ...[['Production key','pk_live_••••4821'],['n8n ingest key','pk_n8n_••••9f2a']].map((k,i)=>
+              this.el('div',{key:i,style:{display:'flex',alignItems:'center',justifyContent:'space-between',background:'#F7FAFE',border:'1px solid #E7EDF5',borderRadius:11,padding:'11px 14px'}},
+                this.el('div',{},this.el('div',{style:{font:'600 12.5px Inter',color:'#21314F'}},k[0]),this.el('code',{style:{font:'500 12px monospace',color:'#7A8AA3'}},k[1])),
+                this.el('div',{style:{display:'flex',gap:7}},
+                  this.el('button',{style:{border:'1.5px solid #DCE3EE',background:'#fff',color:'#5A6B85',font:'600 11px Inter',padding:'6px 10px',borderRadius:8}},'Copy'),
+                  this.el('button',{style:{border:'1.5px solid #F1D6CE',background:'#fff',color:'#B14233',font:'600 11px Inter',padding:'6px 10px',borderRadius:8}},'Revoke')))),
+            this.el('div',{style:{background:'#21314F',borderRadius:11,padding:'12px 14px',marginTop:4}},
+              this.el('div',{style:{font:'600 10px Inter',letterSpacing:'.08em',textTransform:'uppercase',color:'#8FA6C9',marginBottom:6}},'POST endpoint'),
+              this.el('code',{style:{font:'500 11.5px monospace',color:'#C7D3E5'}},'https://api.cholla-billing.app/v1/claims'))),
+          'Inbound keys are scoped per source and rotate on a 90-day policy.'),
+        this.card('Webhooks','Recent inbound deliveries (n8n)',
+          this.el('div',{style:{display:'flex',flexDirection:'column',gap:8}},
+            ...[['claim.denied','200',true],['auth.updated','200',true],['payment.posted','200',true],['claim.denied','500',false]].map((w,i)=>
+              this.el('div',{key:i,style:{display:'flex',alignItems:'center',justifyContent:'space-between',padding:'9px 12px',background:'#F7FAFE',borderRadius:10,border:'1px solid #E7EDF5'}},
+                this.el('code',{style:{font:'600 12px monospace',color:'#21314F'}},w[0]),
+                this.el('div',{style:{display:'flex',alignItems:'center',gap:10}},
+                  this.el('span',{style:{font:'700 11.5px Inter',color:w[2]?'#1F7A56':'#B14233'}},w[1]),
+                  w[2]?null:this.el('button',{style:{border:'none',background:'#4C84C4',color:'#fff',font:'600 11px Inter',padding:'5px 11px',borderRadius:8}},'Retry'))))),
+          'One delivery failed with a 500 — retry queued automatically after 3 attempts.')));
+  }
+
+  pageSettings(){
+    const sectionCard=(title,body)=>this.card(title,null,body);
+    const listBox=(items)=>this.el('div',{style:{display:'flex',flexDirection:'column',gap:8}},
+      ...items.map((it,i)=>this.el('div',{key:i,style:{display:'flex',alignItems:'center',justifyContent:'space-between',background:'#F7FAFE',border:'1px solid #E7EDF5',borderRadius:11,padding:'11px 14px'}},
+        this.el('div',{},this.el('span',{style:{font:'600 12.5px Inter',color:'#21314F'}},it[0]),this.el('span',{style:{font:'500 11.5px Inter',color:'#9AA8BD',marginLeft:8}},it[1])),
+        this.el('span',{style:{font:'600 11px Inter',color:it[3]||'#4C84C4',background:it[4]||'#DCE8F6',padding:'3px 9px',borderRadius:999}},it[2]))));
+    const D=this.D();
+    const payerRows=D?D.settings.payers.map(p=>{const med=p.type==='Medicaid';const self=p.type==='Self-Pay';return [p.name,p.days+'-day pay',p.type,self?'#5A6B85':(med?'#2C5C94':'#A9572F'),self?'#EEF1F6':(med?'#DCE8F6':'#F6E5DD')];}):[];
+    const codeRows=D?D.settings.codes.map(c=>[c.code,c.desc.length>26?c.desc.slice(0,26)+'…':c.desc,'$'+c.charge+' / $'+c.allowed,'#1F7A56','#E3F3EC']):[];
+    const provRows=D?D.settings.providers.map(p=>{const r=p.role;return [p.name,r==='BHMP'?'Medical provider':(r==='BHP'?'Behavioral health prof.':'Behavioral health tech'),r,r==='BHMP'?'#2C5C94':(r==='BHP'?'#5B4B94':'#5A6B85'),r==='BHMP'?'#DCE8F6':(r==='BHP'?'#EAE6F3':'#EEF1F6')];}):[];
+    return this.el('div',{},
+      this.grid2(
+        sectionCard('Payers · '+payerRows.length,listBox(payerRows)),
+        sectionCard('Service codes · '+codeRows.length,listBox(codeRows))),
+      this.grid2(
+        sectionCard('Rendering providers · '+provRows.length,listBox(provRows)),
+        sectionCard('Levels of care',listBox([['Outpatient','OP','No PA','#5A6B85','#EEF1F6'],['IOP','Intensive OP','PA · 30-day','#B5742A','#FBEEDD'],['PHP','Partial hosp.','PA · 30-day','#B5742A','#FBEEDD'],['BHRF','Residential','PA required','#B5742A','#FBEEDD'],['Inpatient','Acute','PA required','#B5742A','#FBEEDD']]))),
+      this.grid1(sectionCard('Users & roles',listBox([['Ruth Okafor','r.okafor@chollabh.org','Admin','#21314F','#E1E6EF'],['Marcus Webb','m.webb@chollabh.org','Billing','#A9572F','#F6E5DD'],['Angela Ruiz','a.ruiz@chollabh.org','UR Specialist','#5B4B94','#EAE6F3']]))),
+      this.grid1(this.card('Denial reason codes','CARC / RARC reference used to categorize denials',
+        this.table([{key:'code',label:'Code',w:'0.5fr'},{key:'desc',label:'Description',w:'2fr'},{key:'cat',label:'Category',w:'1fr'}],
+          [['CO-197','Precertification/authorization absent','Preventable · auth'],['CO-16','Claim lacks information','Preventable · data'],['CO-45','Charge exceeds fee schedule','Contractual'],['CO-29','Time limit for filing expired','Preventable · timing'],['PR-1','Deductible amount','Patient responsibility']].map(r=>({code:this.el('span',{style:{fontWeight:700,color:'#21314F'}},r[0]),desc:r[1],cat:r[2]}))),null)));
+  }
+
+  pageAdmin(){
+    const health=[{l:'Ingestion status',v:'Healthy',c:'#1F7A56'},{l:'Open error rows',v:'14',c:'#B5742A'},{l:'Queue depth',v:'38',c:'#21314F'},{l:'Data quality flags',v:'9',c:'#B14233'}];
+    const audit=[['09:41','M. Webb','Posted payment','CLM-10482'],['09:38','A. Ruiz','Updated authorization','A-4776'],['09:31','System','Ingested batch · Waystar','312 claims'],['09:22','R. Okafor','Exported report','Billing Overview · 30d'],['09:04','M. Webb','Logged denial','CLM-10484']];
+    const quality=[['Unmapped service codes','2','H0016, T1017'],['Unmatched payments','4','no claim ref'],['Claims missing auth link','3','IOP · PA required']];
+    return this.el('div',{},
+      this.el('div',{style:{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:14,marginBottom:22}},
+        ...health.map((h,i)=>this.el('div',{key:i,style:{background:'#fff',border:'1px solid #DCE3EE',borderRadius:16,padding:'16px 18px'}},
+          this.el('div',{style:{font:'500 11.5px Inter',textTransform:'uppercase',letterSpacing:'.03em',color:'#7A8AA3'}},h.l),
+          this.el('div',{style:{font:'700 26px Poppins',color:h.c,marginTop:7}},h.v)))),
+      this.grid2(
+        this.card('Data quality flags','Needs attention before month-end close',
+          this.el('div',{style:{display:'flex',flexDirection:'column',gap:10}},
+            ...quality.map((q,i)=>this.el('div',{key:i,style:{display:'flex',alignItems:'center',justifyContent:'space-between',background:'#FCF6EE',border:'1px solid #F0E2CC',borderRadius:11,padding:'12px 14px'}},
+              this.el('div',{},this.el('div',{style:{font:'600 12.5px Inter',color:'#21314F'}},q[0]),this.el('div',{style:{font:'500 11.5px Inter',color:'#9AA8BD',marginTop:2}},q[2])),
+              this.el('span',{style:{font:'700 15px Poppins',color:'#B5742A'}},q[1])))),
+          'Resolving unmapped codes and auth links clears 5 of 9 flags before close.'),
+        this.card('User activity','Immutable audit log — searchable, exportable',
+          this.el('div',{style:{display:'flex',flexDirection:'column',gap:2}},
+            ...audit.map((a,i)=>this.el('div',{key:i,style:{display:'grid',gridTemplateColumns:'52px 1fr',gap:12,padding:'9px 0',borderBottom:i<audit.length-1?'1px solid #F0F4F9':'none'}},
+              this.el('span',{style:{font:'600 12px Inter',color:'#9AA8BD'}},a[0]),
+              this.el('div',{},this.el('span',{style:{font:'600 12.5px Inter',color:'#21314F'}},a[1]),
+                this.el('span',{style:{font:'500 12.5px Inter',color:'#5A6B85'}},' · '+a[2]+' · '),
+                this.el('span',{style:{font:'600 12.5px Inter',color:'#4C84C4'}},a[3]))))),
+          'Every create, edit, and export is logged with actor, entity, and before/after state.')));
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0}
+    body{font-family:'Inter',system-ui,sans-serif;background:#EEF4FB;color:#21314F;-webkit-font-smoothing:antialiased}
+    input,button,select{font-family:inherit}
+    button{cursor:pointer}
+    ::placeholder{color:#9AA8BD}
+    @keyframes cholla-pop{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+    @keyframes cholla-fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes cholla-pulse{0%,100%{opacity:1}50%{opacity:.35}}
+    .cholla-scroll::-webkit-scrollbar{width:10px;height:10px}
+    .cholla-scroll::-webkit-scrollbar-thumb{background:#C9D6E8;border-radius:999px;border:3px solid transparent;background-clip:content-box}
+  </style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column;background:#EEF4FB">
+
+  <!-- ============ DEMO SHELL TOP BAR ============ -->
+  <header style="display:flex;align-items:center;gap:20px;padding:12px 22px;background:#ffffff;border-bottom:1px solid #DCE3EE;position:sticky;top:0;z-index:50;box-shadow:0 1px 0 rgba(33,49,79,.02)">
+    <div style="display:flex;align-items:center;gap:14px;flex:none">
+      <img src="assets/cholla-logo.png" alt="Cholla Behavioral Health" style="height:38px;width:auto;display:block">
+      <div style="width:1px;height:26px;background:#DCE3EE"></div>
+      <div style="position:relative">
+        <select value="{{ platform }}" onChange="{{ onPlatform }}" style="appearance:none;-webkit-appearance:none;padding:9px 34px 9px 14px;border:1.5px solid #DCE3EE;border-radius:11px;font:600 13.5px Poppins;color:#21314F;background:#fff;outline:none;cursor:pointer">
+          <sc-for list="{{ platformOptions }}" as="o" hint-placeholder-count="2">
+            <option value="{{ o.value }}">{{ o.label }}</option>
+          </sc-for>
+        </select>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7A8AA3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);pointer-events:none"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+    </div>
+    <sc-if value="{{ isCheckinPlatform }}" hint-placeholder-val="{{ true }}">
+    <div style="display:flex;gap:6px;background:#EEF4FB;padding:5px;border-radius:999px;flex:none">
+      <button onClick="{{ goKiosk }}" style="display:flex;align-items:center;gap:8px;border:none;padding:9px 18px;border-radius:999px;font:600 14px Inter;background:{{ tabKioskBg }};color:{{ tabKioskFg }};transition:all .15s">Client Kiosk</button>
+      <button onClick="{{ goStaff }}" style="display:flex;align-items:center;gap:8px;border:none;padding:9px 18px;border-radius:999px;font:600 14px Inter;background:{{ tabStaffBg }};color:{{ tabStaffFg }};transition:all .15s">Staff Dashboard</button>
+      <button onClick="{{ goLeader }}" style="display:flex;align-items:center;gap:8px;border:none;padding:9px 18px;border-radius:999px;font:600 14px Inter;background:{{ tabLeaderBg }};color:{{ tabLeaderFg }};transition:all .15s">Leadership</button>
+    </div>
+    </sc-if>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:14px">
+      <span style="font-size:12.5px;color:#7A8AA3;white-space:nowrap">{{ surfaceHint }}</span>
+      <button onClick="{{ resetDemo }}" style="border:1px solid #DCE3EE;background:#fff;color:#5A6B85;font:600 12.5px Inter;padding:8px 14px;border-radius:999px">Reset demo</button>
+    </div>
+  </header>
+
+  <div style="flex:1;display:flex;flex-direction:column">
+
+    <!-- ===================================================== -->
+    <!-- SURFACE 1 — CLIENT KIOSK                               -->
+    <!-- ===================================================== -->
+    <sc-if value="{{ isKiosk }}" hint-placeholder-val="{{ true }}">
+    <main data-screen-label="Client Kiosk" style="flex:1;display:flex;align-items:flex-start;justify-content:center;padding:34px 20px 48px;background:radial-gradient(120% 90% at 50% 0%,#DCE8F6 0%,#EEF4FB 55%)">
+      <!-- device frame -->
+      <div style="width:430px;background:#21314F;border-radius:46px;padding:13px;box-shadow:0 30px 70px -24px rgba(33,49,79,.55),0 0 0 2px rgba(33,49,79,.06)">
+        <div class="cholla-scroll" style="background:#fff;border-radius:34px;overflow:hidden;height:792px;display:flex;flex-direction:column;position:relative">
+
+          <!-- ---- KIOSK START ---- -->
+          <sc-if value="{{ kStart }}" hint-placeholder-val="{{ true }}">
+          <div class="cholla-scroll" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;padding:26px 24px 28px">
+            <div style="display:flex;justify-content:center;margin:8px 0 6px">
+              <img src="assets/cholla-logo.png" alt="Cholla Behavioral Health" style="height:50px;width:auto">
+            </div>
+            <p style="text-align:center;font:600 12px Inter;letter-spacing:.14em;text-transform:uppercase;color:#4C84C4;margin:6px 0 2px">Group Check-In Kiosk</p>
+            <h1 style="text-align:center;font:600 22px Poppins;margin:0 0 18px;color:#21314F">Facilitator setup</h1>
+
+            <label style="font:600 12.5px Inter;color:#5A6B85;margin-bottom:8px;display:block">Session time</label>
+            <div style="display:flex;gap:6px;background:#EEF4FB;padding:5px;border-radius:14px;margin-bottom:20px">
+              <sc-for list="{{ kSessionSeg }}" as="s" hint-placeholder-count="3">
+                <button onClick="{{ s.onClick }}" style="flex:1;border:none;padding:11px 4px;border-radius:10px;font:600 14px Inter;background:{{ s.bg }};color:{{ s.fg }};box-shadow:{{ s.shadow }}">{{ s.label }}</button>
+              </sc-for>
+            </div>
+
+            <label style="font:600 12.5px Inter;color:#5A6B85;margin-bottom:8px;display:block">Select group</label>
+            <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-bottom:12px">
+              <sc-for list="{{ groupBtns }}" as="g" hint-placeholder-count="10">
+                <button onClick="{{ g.onClick }}" style="aspect-ratio:1;border:1.5px solid {{ g.bd }};border-radius:13px;font:600 17px Poppins;background:{{ g.bg }};color:{{ g.fg }}">{{ g.n }}</button>
+              </sc-for>
+            </div>
+            <div style="min-height:34px;display:flex;align-items:center;justify-content:center;margin-bottom:18px">
+              <span style="font:600 15px Poppins;color:{{ kGroupLabelColor }}">{{ kGroupLabel }}</span>
+            </div>
+
+            <label style="font:600 12.5px Inter;color:#5A6B85;margin-bottom:10px;display:block">Facilitator code</label>
+            <div style="display:flex;gap:12px;justify-content:center;margin-bottom:6px">
+              <sc-for list="{{ codeDots }}" as="d" hint-placeholder-count="4">
+                <div style="width:46px;height:54px;border-radius:13px;border:1.5px solid {{ d.bd }};background:{{ d.bg }};display:flex;align-items:center;justify-content:center;font:700 22px Poppins;color:#21314F">{{ d.ch }}</div>
+              </sc-for>
+            </div>
+            <div style="min-height:18px;text-align:center;margin-bottom:8px"><span style="font:500 12px Inter;color:#BE6A45">{{ kCodeErr }}</span></div>
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:18px">
+              <sc-for list="{{ codePad }}" as="k" hint-placeholder-count="12">
+                <button onClick="{{ k.onClick }}" style="height:50px;border:1px solid #E3E9F2;background:{{ k.bg }};border-radius:13px;font:600 19px Poppins;color:#21314F;display:flex;align-items:center;justify-content:center">{{ k.label }}</button>
+              </sc-for>
+            </div>
+
+            <button onClick="{{ beginSession }}" style="width:100%;border:none;padding:16px;border-radius:15px;font:600 16px Poppins;color:#fff;background:{{ beginBg }};box-shadow:{{ beginShadow }};transition:all .15s">Begin session</button>
+            <p style="text-align:center;font:400 11.5px Inter;color:#9AA8BD;margin:12px 0 0">Demo facilitator code: 0&thinsp;0&thinsp;0&thinsp;0</p>
+          </div>
+          </sc-if>
+
+          <!-- ---- KIOSK MEMBER ---- -->
+          <sc-if value="{{ kMember }}">
+          <div style="flex:1;display:flex;flex-direction:column">
+            <div style="background:#21314F;color:#fff;padding:18px 22px 16px">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+                <div>
+                  <div style="font:500 11.5px Inter;letter-spacing:.12em;text-transform:uppercase;color:#9DB6D8">{{ kSession }} session</div>
+                  <div style="font:600 17px Poppins;margin-top:2px">{{ kGroupLabel }}</div>
+                </div>
+                <div style="text-align:right;background:rgba(255,255,255,.1);border-radius:13px;padding:8px 12px">
+                  <div style="font:700 22px Poppins;line-height:1">{{ kPresent }}</div>
+                  <div style="font:500 9.5px Inter;letter-spacing:.08em;text-transform:uppercase;color:#9DB6D8">present now</div>
+                </div>
+              </div>
+            </div>
+            <div class="cholla-scroll" style="flex:1;overflow-y:auto;padding:20px 24px 24px;display:flex;flex-direction:column">
+              <div style="display:flex;gap:6px;background:#EEF4FB;padding:5px;border-radius:14px;margin-bottom:18px">
+                <sc-for list="{{ kModeSeg }}" as="m" hint-placeholder-count="2">
+                  <button onClick="{{ m.onClick }}" style="flex:1;border:none;padding:12px 4px;border-radius:10px;font:600 15px Inter;background:{{ m.bg }};color:{{ m.fg }};box-shadow:{{ m.shadow }}">{{ m.label }}</button>
+                </sc-for>
+              </div>
+              <p style="text-align:center;font:500 13px Inter;color:#7A8AA3;margin:6px 0 14px">Enter your name to check {{ memberActionWord }}</p>
+              <input value="{{ kEntry }}" onInput="{{ onMemberName }}" autocomplete="off" autocapitalize="words" placeholder="Type your full name" style="width:100%;text-align:center;font:600 25px Poppins;color:#21314F;padding:24px 16px;border:1.5px solid #DCE3EE;border-radius:18px;outline:none;background:#F7FAFE;margin-bottom:16px" style-focus="border-color:#4C84C4;background:#fff">
+              <div style="text-align:center;min-height:20px;margin-bottom:6px"><span style="font:500 12.5px Inter;color:#4C84C4">{{ memberMatchNote }}</span></div>
+              <button onClick="{{ doCheck }}" style="width:100%;border:none;padding:18px;border-radius:16px;font:600 18px Poppins;color:#fff;background:{{ memberActionBg }};box-shadow:{{ memberActionShadow }};margin-top:auto">{{ memberActionLabel }}</button>
+              <button onClick="{{ completeGroup }}" style="width:100%;border:none;background:none;color:#7A8AA3;font:600 13px Inter;padding:14px 0 2px;text-decoration:underline;text-underline-offset:3px">Complete group &amp; close out</button>
+            </div>
+          </div>
+          </sc-if>
+
+          <!-- ---- KIOSK CONFIRM ---- -->
+          <sc-if value="{{ kConfirm }}">
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 28px;text-align:center;background:{{ confirmBg }}">
+            <div style="width:118px;height:118px;border-radius:999px;background:{{ confirmRing }};display:flex;align-items:center;justify-content:center;animation:cholla-pop .45s ease both;box-shadow:0 16px 36px -10px {{ confirmShadow }}">
+              <svg width="58" height="58" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5 11-11"/></svg>
+            </div>
+            <h1 style="font:600 30px Poppins;margin:26px 0 8px;color:{{ confirmText }}">{{ confirmHeadline }}</h1>
+            <p style="font:500 14px Inter;color:#5A6B85;margin:0 0 26px">{{ confirmGroup }}</p>
+            <div style="background:#fff;border-radius:16px;padding:16px 26px;box-shadow:0 6px 18px -8px rgba(33,49,79,.25)">
+              <div style="font:500 11px Inter;letter-spacing:.1em;text-transform:uppercase;color:#9AA8BD">{{ confirmStampLabel }}</div>
+              <div style="font:700 24px Poppins;color:#21314F;margin-top:2px">{{ confirmTime }}</div>
+            </div>
+            <p style="font:400 12px Inter;color:#9AA8BD;margin:24px 0 0">For your privacy, names are never shown here &middot; this screen resets automatically</p>
+            <button onClick="{{ nextMember }}" style="margin-top:14px;border:1.5px solid {{ confirmText }};background:#fff;color:{{ confirmText }};font:600 15px Poppins;padding:13px 34px;border-radius:14px">Next member</button>
+          </div>
+          </sc-if>
+
+          <!-- ---- KIOSK CLOSEOUT ---- -->
+          <sc-if value="{{ kCloseout }}">
+          <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:34px 28px;text-align:center">
+            <div style="font:600 11.5px Inter;letter-spacing:.14em;text-transform:uppercase;color:#4C84C4">Session closed</div>
+            <h1 style="font:600 26px Poppins;margin:8px 0 4px;color:#21314F">{{ kGroupLabel }}</h1>
+            <p style="font:500 14px Inter;color:#7A8AA3;margin:0 0 26px">{{ kSession }} session &middot; {{ closeoutRange }}</p>
+            <div style="display:flex;gap:14px;width:100%;margin-bottom:14px">
+              <div style="flex:1;background:#EEF4FB;border-radius:18px;padding:22px 10px">
+                <div style="font:700 38px Poppins;color:#21314F;line-height:1">{{ closeoutCheckedIn }}</div>
+                <div style="font:500 12px Inter;color:#5A6B85;margin-top:6px">Checked in</div>
+              </div>
+              <div style="flex:1;background:#DCE8F6;border-radius:18px;padding:22px 10px">
+                <div style="font:700 38px Poppins;color:#4C84C4;line-height:1">{{ closeoutPresent }}</div>
+                <div style="font:500 12px Inter;color:#5A6B85;margin-top:6px">Currently present</div>
+              </div>
+            </div>
+            <div style="width:100%;background:#fff;border:1px solid #E3E9F2;border-radius:16px;padding:16px;font:500 13.5px Inter;color:#5A6B85;margin-bottom:26px">Time range &nbsp;<b style="color:#21314F;font-weight:700">{{ closeoutRange }}</b></div>
+            <button onClick="{{ beginSession2 }}" style="width:100%;border:none;padding:16px;border-radius:15px;font:600 16px Poppins;color:#fff;background:#BE6A45;box-shadow:0 10px 22px -8px rgba(190,106,69,.6)">Start new session</button>
+          </div>
+          </sc-if>
+
+        </div>
+      </div>
+    </main>
+    </sc-if>
+
+    <!-- ===================================================== -->
+    <!-- SURFACE 2 — STAFF DASHBOARD                            -->
+    <!-- ===================================================== -->
+    <sc-if value="{{ isStaff }}">
+    <main data-screen-label="Staff Dashboard" style="flex:1;display:flex;flex-direction:column">
+
+      <!-- staff auth gate -->
+      <sc-if value="{{ staffAuth }}">
+      <div style="flex:1;display:flex;align-items:flex-start;justify-content:center;padding:60px 20px;background:radial-gradient(120% 80% at 50% 0%,#DCE8F6 0%,#EEF4FB 55%)">
+        <div style="width:432px;background:#fff;border-radius:24px;border:1px solid #DCE3EE;padding:38px 38px 34px;box-shadow:0 30px 60px -28px rgba(33,49,79,.4);animation:cholla-fade .35s ease both">
+          <img src="assets/cholla-logo.png" alt="Cholla Behavioral Health" style="height:48px;width:auto;display:block;margin:0 auto 18px">
+          <h1 style="text-align:center;font:600 22px Poppins;margin:0 0 4px">Staff sign-in</h1>
+          <p style="text-align:center;font:500 13.5px Inter;color:#7A8AA3;margin:0 0 26px">Authenticate with your work email and MFA code</p>
+          <label style="font:600 12.5px Inter;color:#5A6B85;display:block;margin-bottom:7px">Work email</label>
+          <input value="{{ staffEmail }}" onInput="{{ onStaffEmail }}" type="email" style="width:100%;padding:13px 15px;border:1.5px solid #DCE3EE;border-radius:13px;font:500 14.5px Inter;color:#21314F;margin-bottom:18px;outline:none">
+          <label style="font:600 12.5px Inter;color:#5A6B85;display:block;margin-bottom:7px">6-digit authenticator code</label>
+          <input value="{{ staffMfa }}" onInput="{{ onStaffMfa }}" inputmode="numeric" maxlength="6" placeholder="••••••" style="width:100%;padding:13px 15px;border:1.5px solid #DCE3EE;border-radius:13px;font:700 22px Poppins;letter-spacing:.5em;text-align:center;color:#21314F;margin-bottom:24px;outline:none">
+          <button onClick="{{ staffVerify }}" style="width:100%;border:none;padding:15px;border-radius:13px;font:600 16px Poppins;color:#fff;background:{{ staffVerifyBg }};box-shadow:{{ staffVerifyShadow }}">Verify &amp; continue</button>
+          <p style="text-align:center;font:400 11.5px Inter;color:#9AA8BD;margin:16px 0 0">Demo: any email &middot; any 6 digits</p>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- staff dashboard -->
+      <sc-if value="{{ staffDash }}">
+      <div class="cholla-scroll" style="flex:1;overflow-y:auto;background:#EEF4FB">
+        <!-- header -->
+        <div style="background:#fff;border-bottom:1px solid #DCE3EE;padding:18px 30px;display:flex;align-items:center;gap:22px;flex-wrap:wrap">
+          <div>
+            <div style="font:600 19px Poppins;color:#21314F">Facilitator dashboard</div>
+            <div style="font:500 13px Inter;color:#7A8AA3;margin-top:1px">{{ staffName }} &middot; {{ today }}</div>
+          </div>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:6px;background:#EEF4FB;padding:5px;border-radius:999px">
+            <sc-for list="{{ staffSessionSeg }}" as="s" hint-placeholder-count="3">
+              <button onClick="{{ s.onClick }}" style="border:none;padding:9px 18px;border-radius:999px;font:600 13.5px Inter;background:{{ s.bg }};color:{{ s.fg }}">{{ s.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="padding:24px 30px 40px;max-width:1280px;margin:0 auto">
+          <!-- KPI row -->
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:22px">
+            <sc-for list="{{ staffKpis }}" as="k" hint-placeholder-count="5">
+              <div style="background:#fff;border:1px solid #DCE3EE;border-radius:18px;padding:18px 20px">
+                <div style="font:500 12px Inter;letter-spacing:.04em;text-transform:uppercase;color:#7A8AA3">{{ k.label }}</div>
+                <div style="font:700 34px Poppins;color:{{ k.color }};margin-top:6px;line-height:1">{{ k.value }}</div>
+                <div style="font:500 12px Inter;color:#9AA8BD;margin-top:5px">{{ k.sub }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- toolbar -->
+          <div style="background:#fff;border:1px solid #DCE3EE;border-radius:18px;padding:16px 18px;margin-bottom:18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font:600 12.5px Inter;color:#5A6B85">Group</span>
+              <select value="{{ staffGroupStr }}" onChange="{{ onStaffGroup }}" style="padding:9px 12px;border:1.5px solid #DCE3EE;border-radius:11px;font:600 13.5px Inter;color:#21314F;background:#fff;outline:none">
+                <sc-for list="{{ groupOptions }}" as="o" hint-placeholder-count="10">
+                  <option value="{{ o.value }}">{{ o.label }}</option>
+                </sc-for>
+              </select>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font:600 12.5px Inter;color:#5A6B85">Dates</span>
+              <input type="date" value="{{ staffFrom }}" onInput="{{ onStaffFrom }}" style="padding:8px 12px;border:1.5px solid #DCE3EE;border-radius:11px;font:600 13px Inter;color:#21314F;background:#fff;outline:none">
+              <span style="font:500 12.5px Inter;color:#9AA8BD">to</span>
+              <input type="date" value="{{ staffTo }}" onInput="{{ onStaffTo }}" style="padding:8px 12px;border:1.5px solid #DCE3EE;border-radius:11px;font:600 13px Inter;color:#21314F;background:#fff;outline:none">
+            </div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+              <sc-for list="{{ staffStatusChips }}" as="c" hint-placeholder-count="6">
+                <button onClick="{{ c.onClick }}" style="border:1.5px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font:600 12.5px Inter;padding:8px 14px;border-radius:999px">{{ c.label }}</button>
+              </sc-for>
+              <button onClick="{{ staffToday }}" style="border:1.5px solid #BE6A45;background:#fff;color:#BE6A45;font:600 12.5px Inter;padding:8px 16px;border-radius:999px">Today</button>
+            </div>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:10px">
+              <input value="{{ staffSearch }}" onInput="{{ onStaffSearch }}" placeholder="Search by name…" style="width:190px;padding:10px 14px;border:1.5px solid #DCE3EE;border-radius:11px;font:500 13.5px Inter;color:#21314F;outline:none">
+              <button onClick="{{ toggleStaffView }}" style="border:1.5px solid #DCE3EE;background:#fff;color:#5A6B85;font:600 12.5px Inter;padding:9px 14px;border-radius:11px">{{ staffViewToggleLabel }}</button>
+            </div>
+          </div>
+
+          <!-- add client -->
+          <div style="background:#fff;border:1px solid #DCE3EE;border-radius:18px;padding:14px 18px;margin-bottom:18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <span style="font:600 12.5px Inter;color:#5A6B85;white-space:nowrap">Add client to {{ staffGroupLabel }}</span>
+            <input value="{{ newName }}" onInput="{{ onNewName }}" placeholder="Full name" style="flex:1;min-width:170px;padding:10px 14px;border:1.5px solid #DCE3EE;border-radius:11px;font:500 13.5px Inter;color:#21314F;outline:none">
+            <input value="{{ newId }}" onInput="{{ onNewId }}" placeholder="Check-in ID (optional)" style="width:190px;padding:10px 14px;border:1.5px solid #DCE3EE;border-radius:11px;font:500 13.5px Inter;color:#21314F;outline:none">
+            <button onClick="{{ addClientExpected }}" style="border:1.5px solid #DCE3EE;background:#fff;color:#5A6B85;font:600 12.5px Inter;padding:10px 16px;border-radius:11px">Add as expected</button>
+            <button onClick="{{ addClientIn }}" style="border:none;background:#BE6A45;color:#fff;font:600 12.5px Inter;padding:11px 18px;border-radius:11px;box-shadow:0 6px 14px -6px rgba(190,106,69,.6)">Add &amp; check in</button>
+          </div>
+          </div>
+
+          <!-- roster -->
+          <div style="background:#fff;border:1px solid #DCE3EE;border-radius:18px;overflow:hidden">
+            <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1.1fr 1.5fr;gap:12px;padding:14px 22px;background:#F7FAFE;border-bottom:1px solid #E7EDF5;font:600 11.5px Inter;letter-spacing:.05em;text-transform:uppercase;color:#7A8AA3">
+              <div>Client name</div><div>Check-in</div><div>Check-out</div><div>Status</div><div style="text-align:right">Actions</div>
+            </div>
+            <sc-if value="{{ staffHasRows }}" hint-placeholder-val="{{ true }}">
+            <sc-for list="{{ staffRows }}" as="r" hint-placeholder-count="6">
+              <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1.1fr 1.5fr;gap:12px;padding:14px 22px;border-bottom:1px solid #F0F4F9;align-items:center">
+                <div style="display:flex;flex-direction:column"><span style="font:600 14.5px Inter;color:#21314F">{{ r.name }}</span><span style="font:500 11.5px Inter;color:#9AA8BD">ID {{ r.id }}</span></div>
+                <div style="font:500 14px Inter;color:{{ r.timeColor }}">{{ r.checkin }}</div>
+                <div style="font:500 14px Inter;color:{{ r.timeColor }}">{{ r.checkout }}</div>
+                <div>{{ r.pill }}</div>
+                <div style="display:flex;gap:7px;justify-content:flex-end">{{ r.actions }}</div>
+              </div>
+            </sc-for>
+            </sc-if>
+            <sc-if value="{{ staffEmpty }}">
+            <div style="padding:64px 20px;text-align:center">
+              <div style="width:58px;height:58px;border-radius:999px;background:#EEF4FB;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9AB6DC" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/></svg>
+              </div>
+              <div style="font:600 17px Poppins;color:#21314F">Roster fills as members check in</div>
+              <div style="font:500 13.5px Inter;color:#9AA8BD;margin-top:5px">{{ staffEmptyMsg }}</div>
+            </div>
+            </sc-if>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+    </main>
+    </sc-if>
+
+    <!-- ===================================================== -->
+    <!-- SURFACE 3 — LEADERSHIP DASHBOARD                       -->
+    <!-- ===================================================== -->
+    <sc-if value="{{ isLeader }}">
+    <main data-screen-label="Leadership Dashboard" style="flex:1;display:flex;flex-direction:column">
+
+      <!-- leader auth gate -->
+      <sc-if value="{{ leaderAuth }}">
+      <div style="flex:1;display:flex;align-items:flex-start;justify-content:center;padding:60px 20px;background:radial-gradient(120% 80% at 50% 0%,#DCE8F6 0%,#EEF4FB 55%)">
+        <div style="width:432px;background:#fff;border-radius:24px;border:1px solid #DCE3EE;padding:38px 38px 34px;box-shadow:0 30px 60px -28px rgba(33,49,79,.4);animation:cholla-fade .35s ease both">
+          <img src="assets/cholla-logo.png" alt="Cholla Behavioral Health" style="height:48px;width:auto;display:block;margin:0 auto 18px">
+          <h1 style="text-align:center;font:600 22px Poppins;margin:0 0 4px">Leadership sign-in</h1>
+          <p style="text-align:center;font:500 13.5px Inter;color:#7A8AA3;margin:0 0 26px">Organization-wide roll-up access</p>
+          <label style="font:600 12.5px Inter;color:#5A6B85;display:block;margin-bottom:7px">Work email</label>
+          <input value="{{ leaderEmail }}" onInput="{{ onLeaderEmail }}" type="email" style="width:100%;padding:13px 15px;border:1.5px solid #DCE3EE;border-radius:13px;font:500 14.5px Inter;color:#21314F;margin-bottom:18px;outline:none">
+          <label style="font:600 12.5px Inter;color:#5A6B85;display:block;margin-bottom:7px">6-digit authenticator code</label>
+          <input value="{{ leaderMfa }}" onInput="{{ onLeaderMfa }}" inputmode="numeric" maxlength="6" placeholder="••••••" style="width:100%;padding:13px 15px;border:1.5px solid #DCE3EE;border-radius:13px;font:700 22px Poppins;letter-spacing:.5em;text-align:center;color:#21314F;margin-bottom:24px;outline:none">
+          <button onClick="{{ leaderVerify }}" style="width:100%;border:none;padding:15px;border-radius:13px;font:600 16px Poppins;color:#fff;background:{{ leaderVerifyBg }};box-shadow:{{ leaderVerifyShadow }}">Verify &amp; continue</button>
+          <p style="text-align:center;font:400 11.5px Inter;color:#9AA8BD;margin:16px 0 0">Demo: any email &middot; any 6 digits</p>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- leader overview -->
+      <sc-if value="{{ leaderOverview }}">
+      <div class="cholla-scroll" style="flex:1;overflow-y:auto;background:#EEF4FB">
+        <div style="background:#21314F;color:#fff;padding:22px 36px">
+          <div style="max-width:1320px;margin:0 auto;display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+            <div>
+              <div style="font:600 21px Poppins">Leadership overview</div>
+              <div style="font:500 13px Inter;color:#9DB6D8;margin-top:2px">{{ leaderName }} &middot; {{ today }}</div>
+            </div>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);padding:5px;border-radius:999px">
+              <sc-for list="{{ leaderSessionSeg }}" as="s" hint-placeholder-count="4">
+                <button onClick="{{ s.onClick }}" style="border:none;padding:9px 16px;border-radius:999px;font:600 13px Inter;background:{{ s.bg }};color:{{ s.fg }}">{{ s.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:26px 36px 44px;max-width:1320px;margin:0 auto">
+          <!-- rollup KPIs -->
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:26px">
+            <sc-for list="{{ leaderRollup }}" as="k" hint-placeholder-count="4">
+              <div style="background:#fff;border:1px solid #DCE3EE;border-radius:20px;padding:22px 24px">
+                <div style="font:500 12px Inter;letter-spacing:.04em;text-transform:uppercase;color:#7A8AA3">{{ k.label }}</div>
+                <div style="font:700 40px Poppins;color:{{ k.color }};margin-top:8px;line-height:1">{{ k.value }}</div>
+                <div style="font:500 12.5px Inter;color:#9AA8BD;margin-top:6px">{{ k.sub }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <!-- filters -->
+          <div style="background:#fff;border:1px solid #DCE3EE;border-radius:16px;padding:14px 18px;margin-bottom:22px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <span style="font:600 12.5px Inter;color:#5A6B85;margin-right:2px">Filter</span>
+            <select value="{{ leaderFac }}" onChange="{{ onLeaderFac }}" style="padding:9px 12px;border:1.5px solid #DCE3EE;border-radius:11px;font:600 13px Inter;color:#21314F;background:#fff;outline:none">
+              <sc-for list="{{ facOptions }}" as="o" hint-placeholder-count="6">
+                <option value="{{ o.value }}">{{ o.label }}</option>
+              </sc-for>
+            </select>
+            <input type="date" value="{{ leaderFrom }}" onInput="{{ onLeaderFrom }}" style="padding:8px 12px;border:1.5px solid #DCE3EE;border-radius:11px;font:600 13px Inter;color:#21314F;background:#fff;outline:none">
+            <span style="font:500 12.5px Inter;color:#9AA8BD">to</span>
+            <input type="date" value="{{ leaderTo }}" onInput="{{ onLeaderTo }}" style="padding:8px 12px;border:1.5px solid #DCE3EE;border-radius:11px;font:600 13px Inter;color:#21314F;background:#fff;outline:none">
+            <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+              <sc-for list="{{ leaderStatusChips }}" as="c" hint-placeholder-count="4">
+                <button onClick="{{ c.onClick }}" style="border:1.5px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font:600 12.5px Inter;padding:8px 14px;border-radius:999px">{{ c.label }}</button>
+              </sc-for>
+              <button onClick="{{ leaderToday }}" style="border:1.5px solid #BE6A45;background:#fff;color:#BE6A45;font:600 12.5px Inter;padding:8px 16px;border-radius:999px">Today</button>
+            </div>
+            <input value="{{ leaderSearch }}" onInput="{{ onLeaderSearch }}" placeholder="Search group, facilitator, or client…" style="margin-left:auto;width:250px;padding:10px 14px;border:1.5px solid #DCE3EE;border-radius:11px;font:500 13.5px Inter;color:#21314F;outline:none">
+          </div>
+
+          <!-- group cards -->
+          <sc-if value="{{ leaderHasCards }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px">
+            <sc-for list="{{ leaderCards }}" as="c" hint-placeholder-count="10">
+              <button onClick="{{ c.onClick }}" style="text-align:left;background:#fff;border:1px solid #DCE3EE;border-radius:20px;padding:0;overflow:hidden;cursor:pointer;box-shadow:0 1px 2px rgba(33,49,79,.04);transition:transform .12s,box-shadow .12s" style-hover="transform:translateY(-3px);box-shadow:0 16px 32px -16px rgba(33,49,79,.32)">
+                <div style="height:6px;background:{{ c.accent }}"></div>
+                <div style="padding:20px 22px 22px">
+                  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:14px">
+                    <div style="display:flex;align-items:center;gap:11px">
+                      <div style="width:42px;height:42px;border-radius:13px;background:{{ c.chipBg }};color:{{ c.chipFg }};display:flex;align-items:center;justify-content:center;font:700 18px Poppins;flex:none">{{ c.n }}</div>
+                      <div>
+                        <div style="font:600 16px Poppins;color:#21314F;line-height:1.15">{{ c.name }}</div>
+                        <div style="font:500 12px Inter;color:#7A8AA3;margin-top:2px">{{ c.fac }}</div>
+                      </div>
+                    </div>
+                    {{ c.badge }}
+                  </div>
+                  <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:14px">
+                    <span style="font:700 30px Poppins;color:#21314F">{{ c.countMain }}</span>
+                    <span style="font:600 15px Poppins;color:#9AA8BD">/ {{ c.cap }}</span>
+                    <span style="font:500 13px Inter;color:#7A8AA3;margin-left:2px">checked in</span>
+                  </div>
+                  <div style="height:7px;background:#EEF4FB;border-radius:999px;overflow:hidden;margin-bottom:14px"><div style="height:100%;width:{{ c.barPct }};background:{{ c.accent }};border-radius:999px"></div></div>
+                  <div style="display:flex;gap:18px">
+                    <div><div style="font:700 17px Poppins;color:#4C84C4">{{ c.present }}</div><div style="font:500 11px Inter;color:#9AA8BD">present now</div></div>
+                    <div><div style="font:700 17px Poppins;color:#21314F">{{ c.att }}</div><div style="font:500 11px Inter;color:#9AA8BD">attendance</div></div>
+                    <div style="margin-left:auto;align-self:flex-end;font:600 12.5px Inter;color:#4C84C4">View roster →</div>
+                  </div>
+                </div>
+              </button>
+            </sc-for>
+          </div>
+          </sc-if>
+          <sc-if value="{{ leaderNoCards }}">
+          <div style="background:#fff;border:1px dashed #C9D6E8;border-radius:20px;padding:64px 20px;text-align:center">
+            <div style="width:58px;height:58px;border-radius:999px;background:#EEF4FB;display:flex;align-items:center;justify-content:center;margin:0 auto 16px">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9AB6DC" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+            </div>
+            <div style="font:600 17px Poppins;color:#21314F">No groups to show</div>
+            <div style="font:500 13.5px Inter;color:#9AA8BD;margin-top:5px">{{ leaderNoCardsMsg }}</div>
+          </div>
+          </sc-if>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- leader drill-in detail -->
+      <sc-if value="{{ leaderDetail }}">
+      <div class="cholla-scroll" style="flex:1;overflow-y:auto;background:#EEF4FB">
+        <div style="background:#21314F;color:#fff;padding:20px 36px">
+          <div style="max-width:1280px;margin:0 auto">
+            <button onClick="{{ backToOverview }}" style="border:none;background:rgba(255,255,255,.1);color:#fff;font:600 12.5px Inter;padding:8px 14px;border-radius:999px;margin-bottom:14px">← All groups</button>
+            <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+              <div style="width:46px;height:46px;border-radius:13px;background:{{ detailChipBg }};color:{{ detailChipFg }};display:flex;align-items:center;justify-content:center;font:700 20px Poppins">{{ detailN }}</div>
+              <div>
+                <div style="font:600 21px Poppins">{{ detailName }}</div>
+                <div style="font:500 13px Inter;color:#9DB6D8;margin-top:1px">{{ detailFac }} &middot; {{ detailSession }} session &middot; {{ today }}</div>
+              </div>
+              <div style="margin-left:auto">{{ detailBadge }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="padding:24px 36px 44px;max-width:1280px;margin:0 auto">
+          <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:22px">
+            <sc-for list="{{ detailKpis }}" as="k" hint-placeholder-count="5">
+              <div style="background:#fff;border:1px solid #DCE3EE;border-radius:18px;padding:18px 20px">
+                <div style="font:500 12px Inter;letter-spacing:.04em;text-transform:uppercase;color:#7A8AA3">{{ k.label }}</div>
+                <div style="font:700 34px Poppins;color:{{ k.color }};margin-top:6px;line-height:1">{{ k.value }}</div>
+                <div style="font:500 12px Inter;color:#9AA8BD;margin-top:5px">{{ k.sub }}</div>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="background:#fff;border:1px solid #DCE3EE;border-radius:16px;padding:12px 16px;margin-bottom:18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <sc-for list="{{ detailStatusChips }}" as="c" hint-placeholder-count="6">
+                <button onClick="{{ c.onClick }}" style="border:1.5px solid {{ c.bd }};background:{{ c.bg }};color:{{ c.fg }};font:600 12.5px Inter;padding:8px 14px;border-radius:999px">{{ c.label }}</button>
+              </sc-for>
+            </div>
+            <input value="{{ detailSearch }}" onInput="{{ onDetailSearch }}" placeholder="Search by name…" style="margin-left:auto;width:200px;padding:10px 14px;border:1.5px solid #DCE3EE;border-radius:11px;font:500 13.5px Inter;color:#21314F;outline:none">
+          </div>
+
+          <div style="background:#fff;border:1px solid #DCE3EE;border-radius:18px;overflow:hidden">
+            <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1.1fr;gap:12px;padding:14px 22px;background:#F7FAFE;border-bottom:1px solid #E7EDF5;font:600 11.5px Inter;letter-spacing:.05em;text-transform:uppercase;color:#7A8AA3">
+              <div>Client name</div><div>Check-in</div><div>Check-out</div><div>Status</div>
+            </div>
+            <sc-for list="{{ detailRows }}" as="r" hint-placeholder-count="8">
+              <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1.1fr;gap:12px;padding:14px 22px;border-bottom:1px solid #F0F4F9;align-items:center">
+                <div style="display:flex;flex-direction:column"><span style="font:600 14.5px Inter;color:#21314F">{{ r.name }}</span><span style="font:500 11.5px Inter;color:#9AA8BD">ID {{ r.id }}</span></div>
+                <div style="font:500 14px Inter;color:{{ r.timeColor }}">{{ r.checkin }}</div>
+                <div style="font:500 14px Inter;color:{{ r.timeColor }}">{{ r.checkout }}</div>
+                <div>{{ r.pill }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+    </main>
+    </sc-if>
+
+    <!-- ===================================================== -->
+    <!-- OTHER PLATFORM (placeholder scaffold)                  -->
+    <!-- ===================================================== -->
+    <sc-if value="{{ isOtherPlatform }}">
+    <main data-screen-label="New Platform" style="flex:1;display:flex;align-items:center;justify-content:center;padding:60px 24px;background:radial-gradient(120% 80% at 50% 0%,#DCE8F6 0%,#EEF4FB 55%)">
+      <div style="width:560px;max-width:100%;text-align:center;background:#fff;border:1px dashed #C9D6E8;border-radius:24px;padding:48px 44px">
+        <div style="width:64px;height:64px;border-radius:18px;background:#EEF4FB;display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#4C84C4" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+        </div>
+        <div style="font:600 12px Inter;letter-spacing:.14em;text-transform:uppercase;color:#4C84C4;margin-bottom:8px">{{ otherPlatformName }}</div>
+        <h1 style="font:600 26px Poppins;color:#21314F;margin:0 0 10px">Ready to build</h1>
+        <p style="font:500 14.5px Inter;color:#5A6B85;line-height:1.6;margin:0 0 26px;max-width:400px;margin-left:auto;margin-right:auto">This platform lives alongside the Check-In System and uses the same Cholla identity. Tell Claude what it should do and its screens will appear here — selectable from the dropdown above.</p>
+        <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+          <div style="font:600 12.5px Inter;color:#2C5C94;background:#DCE8F6;padding:8px 14px;border-radius:999px">Shared branding</div>
+          <div style="font:600 12.5px Inter;color:#A9572F;background:#F6E5DD;padding:8px 14px;border-radius:999px">Same components</div>
+          <div style="font:600 12.5px Inter;color:#1F7A56;background:#E3F3EC;padding:8px 14px;border-radius:999px">One switcher</div>
+        </div>
+      </div>
+    </main>
+    </sc-if>
+
+  </div>
+</div>
+<template id="__bundler_thumbnail" data-bg-color="#21314F">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#21314F"/>
+    <rect x="430" y="230" width="340" height="340" rx="64" fill="#ffffff"/>
+    <path d="M520 405 l55 55 110 -120" fill="none" stroke="#2E9E73" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="600" cy="640" r="18" fill="#BE6A45"/>
+    <text x="600" y="715" font-family="Georgia, serif" font-size="58" font-style="italic" fill="#4C84C4" text-anchor="middle">Cholla</text>
+  </svg>
+</template></x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    this.CLIENTS=['Maria Alvarez','James Carter','Dana Whitfield','Robert Nguyen','Latoya Brooks','Kevin Park','Angela Ruiz','Marcus Webb','Priya Shah','Thomas Reed'];
+    this.WALKINS=['Sofia Delgado','Aaron Pike','Renee Coleman','Victor Hahn','Bianca Ford'];
+    this.SESSIONS=['Morning','Afternoon','Evening'];
+    this.CURRENT='Afternoon';
+    this.FACS=['R. Okafor, LPC','S. Tran, LCSW','D. Alvarez, LISAC','M. Greene, LPC','J. Whitman, LCSW','A. Castillo, LISAC','P. Bennett, LMFT','K. Rios, LCSW','L. Foster, PMHNP','T. Nash, LPC'];
+    this.GROUPS=[];
+    this.SESSIONS.forEach((session)=>{for(let n=1;n<=10;n++){
+      const status=this.statusOf({session});
+      const cap=9+((n+this.SESSIONS.indexOf(session))%4);
+      let ci=0,present=0;
+      if(status==='Complete'){ci=Math.max(0,cap-(n%3));present=0;}
+      else if(status==='In Progress'){ci=Math.max(0,cap-(n%3));present=Math.max(1,ci-2-(n%3));}
+      this.GROUPS.push({session,n,name:session+' IOP',fac:this.FACS[(n-1)%this.FACS.length],cap,ci,present});
+    }});
+    this.LIVE_SESSION='Afternoon';this.LIVE_N=3;
+    this.TODAY='2026-06-19';
+    this.state={
+      surface:'kiosk', screen:'kiosk-start', platform:'checkin',
+      staffAuthed:false, leaderAuthed:false,
+      demoMin:13*60+47,
+      kSession:'Afternoon', kGroup:3, kCode:'', kCodeErr:'',
+      kMode:'in', kEntry:'', confirm:null,
+      staffEmail:'d.alvarez@chollabh.org', staffMfa:'', staffName:'Dana Alvarez, LISAC',
+      staffGroup:3, staffSession:'Afternoon', staffFrom:'2026-06-19', staffTo:'2026-06-19', staffStatus:'All', staffSearch:'', staffView:'live',
+      leaderEmail:'r.okafor@chollabh.org', leaderMfa:'', leaderName:'Ruth Okafor, Clinical Director',
+      leaderSessionF:'All', leaderFac:'All', leaderStatusF:'All', leaderFrom:'2026-06-19', leaderTo:'2026-06-19', leaderSearch:'', leaderGroupSession:null, leaderGroupN:null,
+      detailStatus:'All', detailSearch:'',
+      newName:'', newId:'',
+      rosters:{'Afternoon-3':this.initialRoster()}
+    };
+  }
+
+  initialRoster(){return [
+    {id:'1042',name:'Maria Alvarez',checkin:'1:02 PM',checkout:null,status:'Checked In'},
+    {id:'1108',name:'James Carter',checkin:'1:05 PM',checkout:'2:48 PM',status:'Checked Out'},
+    {id:'1190',name:'Dana Whitfield',checkin:'1:08 PM',checkout:null,status:'Checked In'},
+    {id:'1234',name:'Robert Nguyen',checkin:'1:21 PM',checkout:null,status:'Late'},
+    {id:'1356',name:'Latoya Brooks',checkin:'1:03 PM',checkout:null,status:'Checked In'},
+    {id:'1401',name:'Kevin Park',checkin:null,checkout:null,status:'Expected'},
+    {id:'1478',name:'Angela Ruiz',checkin:'1:10 PM',checkout:null,status:'Checked In'},
+    {id:'1502',name:'Marcus Webb',checkin:null,checkout:null,status:'Absent'},
+    {id:'1560',name:'Priya Shah',checkin:'1:00 PM',checkout:'2:50 PM',status:'Checked Out'},
+    {id:'1633',name:'Thomas Reed',checkin:'1:15 PM',checkout:null,status:'Checked In'}
+  ];}
+
+  // ---------- helpers ----------
+  fmtClock(m){let h=Math.floor(m/60)%24,mm=m%60,ap=h>=12?'PM':'AM',hr=h%12;if(hr===0)hr=12;return hr+':'+String(mm).padStart(2,'0')+' '+ap;}
+  group(session,n){return this.GROUPS.find(g=>g.session===session&&g.n===n);}
+  groupLabel(session,n){return 'Group '+n+' · '+session+' IOP';}
+  statusOf(g){const i=this.SESSIONS.indexOf(g.session),c=this.SESSIONS.indexOf(this.CURRENT);return i<c?'Complete':(i===c?'In Progress':'Upcoming');}
+  rosterKey(g){return g.session+'-'+g.n;}
+  isLive(g){return g.session===this.LIVE_SESSION&&g.n===this.LIVE_N;}
+  getRoster(g){if(!g)return[];const k=this.rosterKey(g);if(this.state.rosters[k])return this.state.rosters[k];return this.isLive(g)?this.initialRoster():this.buildRoster(g);}
+  stats(g){const r=this.getRoster(g);return{ci:r.filter(x=>x.checkin).length,present:r.filter(x=>x.checkin&&!x.checkout).length,co:r.filter(x=>x.checkout).length,cap:r.length,absent:r.filter(x=>x.status==='Absent').length};}
+  ciOf(g){return this.stats(g).ci;}
+  presentOf(g){return this.stats(g).present;}
+  capOf(g){return this.stats(g).cap;}
+
+  slotTime(session,i){const base={Morning:9*60+5,Afternoon:13*60+2,Evening:17*60+3}[session];return this.fmtClock(base+i);}
+  buildRoster(g){
+    const rows=[];const ci=g.ci,pres=g.present,cap=g.cap,started=this.statusOf(g)!=='Upcoming';const off=(g.session.length+g.n)%10,si=this.SESSIONS.indexOf(g.session);
+    for(let i=0;i<cap;i++){
+      const name=this.CLIENTS[(i+off)%10];let status='Expected',checkin=null,checkout=null;
+      if(i<pres){status='Checked In';checkin=this.slotTime(g.session,i);}
+      else if(i<ci){status='Checked Out';checkin=this.slotTime(g.session,i);checkout=this.slotTime(g.session,i+95);}
+      else if(started&&i===cap-1&&ci<cap){status='Absent';}
+      rows.push({id:String(2000+si*1000+g.n*30+i),name,checkin,checkout,status});
+    }
+    return rows;
+  }
+
+  pill(status){
+    const M={'Checked In':['#E3F3EC','#1F7A56'],'Checked Out':['#E8ECF3','#3A4A66'],'Expected':['#DCE8F6','#2C5C94'],'Late':['#FBEEDD','#B5742A'],'Absent':['#F7E3E0','#B14233']};
+    const c=M[status]||['#eee','#333'];
+    return React.createElement('span',{style:{display:'inline-flex',alignItems:'center',gap:6,background:c[0],color:c[1],font:'600 12.5px Inter',padding:'5px 11px',borderRadius:999,whiteSpace:'nowrap'}},
+      React.createElement('span',{style:{width:6,height:6,borderRadius:999,background:c[1]}}),status);
+  }
+  badge(status){
+    const M={'In Progress':['#E3F3EC','#1F7A56'],'Complete':['#E8ECF3','#3A4A66'],'Upcoming':['#DCE8F6','#2C5C94']};
+    const c=M[status]||['#eee','#333'];const pulse=status==='In Progress';
+    return React.createElement('span',{style:{display:'inline-flex',alignItems:'center',gap:6,background:c[0],color:c[1],font:'600 11.5px Inter',padding:'5px 11px',borderRadius:999,whiteSpace:'nowrap',flex:'none'}},
+      React.createElement('span',{style:{width:6,height:6,borderRadius:999,background:c[1],animation:pulse?'cholla-pulse 1.4s infinite':'none'}}),status);
+  }
+  actionBtn(label,color,bg,fn){return React.createElement('button',{onClick:fn,style:{border:'1.5px solid '+bg,background:'#fff',color:color,font:'600 12px Inter',padding:'6px 11px',borderRadius:9,cursor:'pointer',whiteSpace:'nowrap'}},label);}
+
+  seg(opts,cur,fn,activeBg,activeFg,inFg){
+    activeBg=activeBg||'#21314F';activeFg=activeFg||'#fff';inFg=inFg||'#5A6B85';
+    return opts.map(o=>({label:o,bg:o===cur?activeBg:'transparent',fg:o===cur?activeFg:inFg,shadow:o===cur?'0 2px 6px -2px rgba(33,49,79,.3)':'none',onClick:()=>fn(o)}));
+  }
+  chips(opts,cur,fn){
+    return opts.map(o=>{const a=o===cur;return{label:o,bg:a?'#21314F':'#fff',fg:a?'#fff':'#5A6B85',bd:a?'#21314F':'#DCE3EE',onClick:()=>fn(o)};});
+  }
+
+  // ---------- navigation ----------
+  onPlatform=(e)=>this.setState({platform:e.target.value});
+  goKiosk=()=>this.setState({surface:'kiosk',screen:this.state.screen.startsWith('kiosk')?this.state.screen:'kiosk-start'});
+  goStaff=()=>this.setState({surface:'staff',screen:this.state.staffAuthed?'staff-dashboard':'staff-auth'});
+  goLeader=()=>this.setState({surface:'leader',screen:this.state.leaderAuthed?(this.state.leaderGroupN?'leader-detail':'leader-overview'):'leader-auth'});
+  resetDemo=()=>{clearTimeout(this._t);this.setState({surface:'kiosk',screen:'kiosk-start',staffAuthed:false,leaderAuthed:false,kSession:'Afternoon',kGroup:3,kCode:'',kCodeErr:'',kMode:'in',kEntry:'',confirm:null,staffMfa:'',leaderMfa:'',staffGroup:3,staffStatus:'All',staffSearch:'',staffView:'live',leaderSessionF:'All',leaderFac:'All',leaderStatusF:'All',leaderFrom:'2026-06-19',leaderTo:'2026-06-19',leaderSearch:'',leaderGroupSession:null,leaderGroupN:null,staffSession:'Afternoon',staffFrom:'2026-06-19',staffTo:'2026-06-19',detailStatus:'All',detailSearch:'',newName:'',newId:'',demoMin:13*60+47,rosters:{'Afternoon-3':this.initialRoster()}});};
+
+  // ---------- kiosk ----------
+  padPressCode=(d)=>{this.setState(s=>{let c=s.kCode;if(d==='Clear')c='';else if(d==='⌫')c=c.slice(0,-1);else if(c.length<4)c=c+d;return{kCode:c,kCodeErr:''};});};
+  padPressEntry=(d)=>{this.setState(s=>{let c=s.kEntry;if(d==='Clear')c='';else if(d==='⌫')c=c.slice(0,-1);else if(c.length<4)c=c+d;return{kEntry:c};});};
+  beginSession=()=>{if(this.state.kCode!=='0000'){this.setState({kCodeErr:'Enter facilitator code 0000 to begin'});return;}this.setState({screen:'kiosk-member',kEntry:'',kMode:'in'});};
+  beginSession2=()=>this.setState({screen:'kiosk-start',kCode:'',kCodeErr:'',kEntry:'',confirm:null});
+  setKMode=(m)=>this.setState({kMode:m==='Check in'?'in':'out',kEntry:''});
+  titleCase(s){return s.trim().replace(/\s+/g,' ').replace(/\b\w/g,c=>c.toUpperCase());}
+  onMemberName=(e)=>this.setState({kEntry:e.target.value.replace(/[^A-Za-z .'-]/g,'').slice(0,40)});
+  doCheck=()=>{
+    const {kEntry,kMode,kSession,kGroup,demoMin}=this.state;const q=kEntry.trim();if(q.length<2)return;
+    const g=this.group(kSession,kGroup);const k=this.rosterKey(g);const nm=demoMin+1+Math.floor(Math.random()*2);const t=this.fmtClock(nm);
+    this.setState(s=>{const cur=this.curRoster(g,s.rosters);const i=cur.findIndex(r=>r.name.toLowerCase()===q.toLowerCase());let next;
+      if(i>=0){next=cur.slice();next[i]=kMode==='in'?{...cur[i],checkin:t,checkout:null,status:'Checked In'}:{...cur[i],checkout:t,status:'Checked Out'};}
+      else{const id=String(1800+cur.length);next=[...cur,kMode==='in'?{id,name:this.titleCase(q),checkin:t,checkout:null,status:'Checked In'}:{id,name:this.titleCase(q),checkin:null,checkout:t,status:'Checked Out'}];}
+      return{rosters:{...s.rosters,[k]:next},demoMin:nm};});
+    const conf={mode:kMode,group:this.groupLabel(kSession,kGroup),time:t};
+    this.setState({confirm:conf,screen:'kiosk-confirm',kEntry:''});
+    clearTimeout(this._t);this._t=setTimeout(()=>{if(this.state.screen==='kiosk-confirm')this.setState({screen:'kiosk-member',confirm:null});},4800);
+  };
+  nextMember=()=>{clearTimeout(this._t);this.setState({screen:'kiosk-member',confirm:null});};
+  completeGroup=()=>{clearTimeout(this._t);this.setState({screen:'kiosk-closeout'});};
+
+  // ---------- staff ----------
+  onStaffEmail=(e)=>this.setState({staffEmail:e.target.value});
+  onStaffMfa=(e)=>this.setState({staffMfa:e.target.value.replace(/\D/g,'').slice(0,6)});
+  staffVerify=()=>{if(this.state.staffMfa.length===6&&this.state.staffEmail.includes('@'))this.setState({staffAuthed:true,screen:'staff-dashboard'});};
+  onStaffGroup=(e)=>this.setState({staffGroup:parseInt(e.target.value,10),staffView:'live',staffStatus:'All',staffSearch:''});
+  setStaffStatus=(s)=>this.setState({staffStatus:s});
+  onStaffSearch=(e)=>this.setState({staffSearch:e.target.value});
+  toggleStaffView=()=>this.setState(s=>({staffView:s.staffView==='live'?'empty':'live'}));
+  staffSetSession=(s)=>{const first=this.GROUPS.find(g=>g.session===s);this.setState({staffSession:s,staffGroup:first?first.n:this.state.staffGroup,staffView:'live',staffStatus:'All',staffSearch:''});};
+  onStaffDate=(e)=>this.setState({staffDate:e.target.value});
+  onStaffFrom=(e)=>this.setState({staffFrom:e.target.value});
+  onStaffTo=(e)=>this.setState({staffTo:e.target.value});
+  onLeaderFrom=(e)=>this.setState({leaderFrom:e.target.value});
+  onLeaderTo=(e)=>this.setState({leaderTo:e.target.value});
+  onLeaderDate=(e)=>this.setState({leaderDate:e.target.value});
+  fmtDate(iso){if(!iso)return '—';const p=iso.split('-');const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return M[parseInt(p[1],10)-1]+' '+parseInt(p[2],10)+', '+p[0];}
+  groupClients(g){return this.getRoster(g).map(r=>r.name.toLowerCase());}
+  baseStaffRoster(){if(!this.rangeHasToday(this.state.staffFrom,this.state.staffTo))return[];if(this.state.staffView==='empty')return[];const g=this.group(this.state.staffSession,this.state.staffGroup);return g?this.getRoster(g):[];}
+  staffGroupObj(){return this.group(this.state.staffSession,this.state.staffGroup);}
+  rangeHasToday(from,to){const f=from||this.TODAY,t=to||this.TODAY;const lo=f<=t?f:t,hi=f<=t?t:f;return lo<=this.TODAY&&this.TODAY<=hi;}
+  rangeLabel(from,to){const f=from||this.TODAY,t=to||this.TODAY;const lo=f<=t?f:t,hi=f<=t?t:f;return lo===hi?this.fmtDate(lo):(this.fmtDate(lo)+' \u2013 '+this.fmtDate(hi));}
+  curRoster(g,rosters){const k=this.rosterKey(g);return rosters[k]?rosters[k]:(this.isLive(g)?this.initialRoster():this.buildRoster(g));}
+  mutateGroup(g,matchFn,fn){const k=this.rosterKey(g);this.setState(s=>{const cur=this.curRoster(g,s.rosters);const t=this.fmtClock(s.demoMin+1);return{rosters:{...s.rosters,[k]:cur.map(r=>matchFn(r)?fn(r,t):r)},demoMin:s.demoMin+1};});}
+  checkInClient=(id)=>this.mutateGroup(this.staffGroupObj(),r=>r.id===id,(r,t)=>({...r,checkin:t,checkout:null,status:'Checked In'}));
+  checkOutClient=(id)=>this.mutateGroup(this.staffGroupObj(),r=>r.id===id,(r,t)=>({...r,checkout:t,status:'Checked Out'}));
+  markAbsent=(id)=>this.mutateGroup(this.staffGroupObj(),r=>r.id===id,(r)=>({...r,checkin:null,checkout:null,status:'Absent'}));
+  onNewName=(e)=>this.setState({newName:e.target.value.replace(/[^A-Za-z .'-]/g,'').slice(0,40)});
+  onNewId=(e)=>this.setState({newId:e.target.value.replace(/\D/g,'').slice(0,6)});
+  addClient=(checkIn)=>{const nm=this.titleCase(this.state.newName);if(nm.length<2)return;const g=this.staffGroupObj();const k=this.rosterKey(g);this.setState(s=>{const cur=this.curRoster(g,s.rosters);const t=this.fmtClock(s.demoMin+1);const id=s.newId||String(1700+cur.length);const row=checkIn?{id,name:nm,checkin:t,checkout:null,status:'Checked In'}:{id,name:nm,checkin:null,checkout:null,status:'Expected'};return{rosters:{...s.rosters,[k]:[...cur,row]},demoMin:s.demoMin+1,newName:'',newId:'',staffView:'live'};});};
+  addClientIn=()=>this.addClient(true);
+  addClientExpected=()=>this.addClient(false);
+  staffToday=()=>this.setState({staffFrom:this.TODAY,staffTo:this.TODAY});
+  leaderToday=()=>this.setState({leaderFrom:this.TODAY,leaderTo:this.TODAY});
+
+  // ---------- leader ----------
+  onLeaderEmail=(e)=>this.setState({leaderEmail:e.target.value});
+  onLeaderMfa=(e)=>this.setState({leaderMfa:e.target.value.replace(/\D/g,'').slice(0,6)});
+  leaderVerify=()=>{if(this.state.leaderMfa.length===6&&this.state.leaderEmail.includes('@'))this.setState({leaderAuthed:true,screen:'leader-overview'});};
+  setLeaderSession=(s)=>this.setState({leaderSessionF:s});
+  onLeaderFac=(e)=>this.setState({leaderFac:e.target.value});
+  setLeaderStatus=(s)=>this.setState({leaderStatusF:s});
+  onLeaderSearch=(e)=>this.setState({leaderSearch:e.target.value});
+  openGroup=(session,n)=>this.setState({leaderGroupSession:session,leaderGroupN:n,screen:'leader-detail',detailStatus:'All',detailSearch:''});
+  backToOverview=()=>this.setState({leaderGroupN:null,screen:'leader-overview'});
+  setDetailStatus=(s)=>this.setState({detailStatus:s});
+  onDetailSearch=(e)=>this.setState({detailSearch:e.target.value});
+
+  accentFor(session){return {Morning:'#4C84C4',Afternoon:'#BE6A45',Evening:'#21314F'}[session];}
+  accentChip(session){return {Morning:['#DCE8F6','#2C5C94'],Afternoon:['#F6E5DD','#A9572F'],Evening:['#E1E6EF','#21314F']}[session];}
+
+  renderVals(){
+    const st=this.state;
+    const surfaceHints={kiosk:'One device per group · privacy-first',staff:'Authenticated · live session roster',leader:'Authenticated · organization roll-up'};
+    const tab=(k)=>({bg:st.surface===k?'#21314F':'transparent',fg:st.surface===k?'#fff':'#5A6B85'});
+    const tk=tab('kiosk'),ts=tab('staff'),tl=tab('leader');
+
+    // ---- kiosk ----
+    const codePad=['1','2','3','4','5','6','7','8','9','Clear','0','⌫'].map(l=>({label:l,bg:(l==='Clear'||l==='⌫')?'#F4F7FB':'#fff',onClick:()=>this.padPressCode(l)}));
+    const memberPad=['1','2','3','4','5','6','7','8','9','Clear','0','⌫'].map(l=>({label:l,bg:(l==='Clear'||l==='⌫')?'#F4F7FB':'#fff',onClick:()=>this.padPressEntry(l)}));
+    const groupBtns=this.GROUPS.filter(g=>g.session===st.kSession).map(g=>{const sel=g.n===st.kGroup;return{n:g.n,bg:sel?'#4C84C4':'#fff',fg:sel?'#fff':'#21314F',bd:sel?'#4C84C4':'#DCE3EE',onClick:()=>this.setState({kGroup:g.n})};});
+    const codeDots=[0,1,2,3].map(i=>({ch:st.kCode[i]?'•':'',bg:st.kCode.length===i?'#F2F7FD':'#fff',bd:st.kCode.length===i?'#4C84C4':'#DCE3EE'}));
+    const begin=st.kCode.length===4;
+    const liveG=this.group(this.LIVE_SESSION,this.LIVE_N);const live=this.stats(liveG);
+    const kG=this.group(st.kSession,st.kGroup);const kStats=kG?this.stats(kG):{ci:0,present:0};
+    const kPresentNum=kStats.present;
+    const kGroupRoster=kG?this.getRoster(kG):[];
+    const conf=st.confirm;
+    const isIn=conf&&conf.mode==='in';
+
+    // ---- staff ----
+    const base=this.baseStaffRoster();
+    const sCi=base.filter(r=>r.checkin).length,sPresent=base.filter(r=>r.checkin&&!r.checkout).length,sCo=base.filter(r=>r.checkout).length,sExp=base.length;
+    const sAtt=sExp?Math.round(sCi/sExp*100):0;
+    const staffKpis=[
+      {label:'Checked in',value:String(sCi),color:'#1F7A56',sub:'today'},
+      {label:'Expected',value:String(sExp),color:'#21314F',sub:'enrolled'},
+      {label:'Currently present',value:String(sPresent),color:'#4C84C4',sub:'in the room now'},
+      {label:'Checked out',value:String(sCo),color:'#3A4A66',sub:'completed'},
+      {label:'Attendance',value:sAtt+'%',color:'#BE6A45',sub:sCi+' of '+sExp}
+    ];
+    let staffRows=base;
+    if(st.staffStatus!=='All')staffRows=staffRows.filter(r=>r.status===st.staffStatus);
+    if(st.staffSearch.trim())staffRows=staffRows.filter(r=>r.name.toLowerCase().includes(st.staffSearch.toLowerCase()));
+    const editable=st.staffView==='live'&&this.rangeHasToday(st.staffFrom,st.staffTo);
+    staffRows=staffRows.map(r=>{
+      let actions;
+      if(!editable){actions=React.createElement('span',{style:{color:'#C2CCDB',font:'500 13px Inter'}},'—');}
+      else{
+        const btns=[];
+        if(r.status==='Absent'||!r.checkin)btns.push(this.actionBtn('Check in','#1F7A56','#BBE3D0',()=>this.checkInClient(r.id)));
+        if(r.checkin&&!r.checkout)btns.push(this.actionBtn('Check out','#3A4A66','#CCD6E5',()=>this.checkOutClient(r.id)));
+        if(r.status!=='Absent'&&!r.checkout)btns.push(this.actionBtn('Absent','#B14233','#EAC6C0',()=>this.markAbsent(r.id)));
+        actions=React.createElement(React.Fragment,{},...btns.map((b,i)=>React.cloneElement(b,{key:i})));
+      }
+      return{id:r.id,name:r.name,checkin:r.checkin||'—',checkout:r.checkout||'—',timeColor:'#5A6B85',pill:this.pill(r.status),actions};
+    });
+    const groupOptions=this.GROUPS.filter(g=>g.session===st.staffSession).map(g=>({value:String(g.n),label:'Group '+g.n+' · '+g.name}));
+    const staffStatusChips=this.chips(['All','Checked In','Checked Out','Expected','Late','Absent'],st.staffStatus,this.setStaffStatus);
+    const today='Thursday, June 19, 2026';
+
+    // ---- leader ----
+    const startedCap=this.GROUPS.filter(g=>this.statusOf(g)!=='Upcoming').reduce((a,g)=>a+this.capOf(g),0);
+    const totalCi=this.GROUPS.filter(g=>this.statusOf(g)!=='Upcoming').reduce((a,g)=>a+this.ciOf(g),0);
+    const totalPresent=this.GROUPS.reduce((a,g)=>a+this.presentOf(g),0);
+    const activeNow=this.GROUPS.filter(g=>this.statusOf(g)==='In Progress').length;
+    const leaderRollup=[
+      {label:'Active groups now',value:String(activeNow),color:'#1F7A56',sub:'in progress'},
+      {label:'Total checked in',value:String(totalCi),color:'#21314F',sub:'across all groups today'},
+      {label:'Currently present',value:String(totalPresent),color:'#4C84C4',sub:'clients on-site now'},
+      {label:'Overall attendance',value:(startedCap?Math.round(totalCi/startedCap*100):0)+'%',color:'#BE6A45',sub:totalCi+' of '+startedCap+' expected'}
+    ];
+    let cards=this.GROUPS.slice();
+    if(!this.rangeHasToday(st.leaderFrom,st.leaderTo))cards=[];
+    if(st.leaderSessionF&&st.leaderSessionF!=='All')cards=cards.filter(g=>g.session===st.leaderSessionF);
+    if(st.leaderFac!=='All')cards=cards.filter(g=>g.fac===st.leaderFac);
+    if(st.leaderStatusF!=='All')cards=cards.filter(g=>this.statusOf(g)===st.leaderStatusF);
+    if(st.leaderSearch.trim()){const q=st.leaderSearch.toLowerCase();cards=cards.filter(g=>g.name.toLowerCase().includes(q)||g.fac.toLowerCase().includes(q)||('group '+g.n).includes(q)||this.groupClients(g).some(n=>n.includes(q)));}
+    const leaderCards=cards.map(g=>{const ci=this.ciOf(g),cap=this.capOf(g),pr=this.presentOf(g),att=cap?Math.round(ci/cap*100):0,ch=this.accentChip(g.session);
+      return{n:g.n,name:g.name,fac:g.fac,cap:String(cap),countMain:String(ci),present:String(pr),att:att+'%',barPct:(cap?Math.round(ci/cap*100):0)+'%',accent:this.accentFor(g.session),chipBg:ch[0],chipFg:ch[1],badge:this.badge(this.statusOf(g)),onClick:()=>this.openGroup(g.session,g.n)};});
+    const facOptions=[{value:'All',label:'All facilitators'}].concat([...new Set(this.GROUPS.map(g=>g.fac))].map(f=>({value:f,label:f})));
+    const leaderStatusChips=this.chips(['All','In Progress','Upcoming','Complete'],st.leaderStatusF,this.setLeaderStatus);
+
+    // ---- detail ----
+    let dv={};
+    if(st.leaderGroupN){
+      const g=this.group(st.leaderGroupSession,st.leaderGroupN);const rows=this.getRoster(g);
+      const dCi=rows.filter(r=>r.checkin).length,dPr=rows.filter(r=>r.checkin&&!r.checkout).length,dCo=rows.filter(r=>r.checkout).length,dExp=rows.length;
+      let drows=rows;
+      if(st.detailStatus!=='All')drows=drows.filter(r=>r.status===st.detailStatus);
+      if(st.detailSearch.trim())drows=drows.filter(r=>r.name.toLowerCase().includes(st.detailSearch.toLowerCase()));
+      const ch=this.accentChip(g.session);
+      dv={
+        detailN:String(g.n),detailName:g.name,detailFac:g.fac,detailSession:g.session,detailChipBg:ch[0],detailChipFg:ch[1],detailBadge:this.badge(this.statusOf(g)),
+        detailKpis:[
+          {label:'Checked in',value:String(dCi),color:'#1F7A56',sub:'today'},
+          {label:'Expected',value:String(dExp),color:'#21314F',sub:'enrolled'},
+          {label:'Currently present',value:String(dPr),color:'#4C84C4',sub:'in the room now'},
+          {label:'Checked out',value:String(dCo),color:'#3A4A66',sub:'completed'},
+          {label:'Attendance',value:(dExp?Math.round(dCi/dExp*100):0)+'%',color:'#BE6A45',sub:dCi+' of '+dExp}
+        ],
+        detailStatusChips:this.chips(['All','Checked In','Checked Out','Expected','Late','Absent'],st.detailStatus,this.setDetailStatus),
+        detailSearch:st.detailSearch,
+        detailRows:drows.map(r=>({id:r.id,name:r.name,checkin:r.checkin||'—',checkout:r.checkout||'—',timeColor:'#5A6B85',pill:this.pill(r.status)}))
+      };
+    }
+
+    const P=st.platform;const isCheckin=P==='checkin';
+    const platformOptions=[{value:'checkin',label:'Group Check-In System'},{value:'new',label:'+ New platform'}];
+    const otherPlatformNames={'new':'New Platform'};
+    return {
+      platform:P, onPlatform:this.onPlatform, platformOptions, isCheckinPlatform:isCheckin, isOtherPlatform:!isCheckin,
+      otherPlatformName:otherPlatformNames[P]||'New Platform',
+      isKiosk:isCheckin&&st.surface==='kiosk', isStaff:isCheckin&&st.surface==='staff', isLeader:isCheckin&&st.surface==='leader',
+      kStart:st.screen==='kiosk-start', kMember:st.screen==='kiosk-member', kConfirm:st.screen==='kiosk-confirm', kCloseout:st.screen==='kiosk-closeout',
+      staffAuth:st.screen==='staff-auth', staffDash:st.screen==='staff-dashboard',
+      leaderAuth:st.screen==='leader-auth', leaderOverview:st.screen==='leader-overview', leaderDetail:st.screen==='leader-detail',
+      surfaceHint:isCheckin?surfaceHints[st.surface]:'Cholla platform · built on the shared design system',
+      goKiosk:this.goKiosk, goStaff:this.goStaff, goLeader:this.goLeader, resetDemo:this.resetDemo,
+      tabKioskBg:tk.bg,tabKioskFg:tk.fg,tabStaffBg:ts.bg,tabStaffFg:ts.fg,tabLeaderBg:tl.bg,tabLeaderFg:tl.fg,
+
+      // kiosk
+      kSession:st.kSession, kSessionSeg:this.seg(this.SESSIONS,st.kSession,(o)=>this.setState({kSession:o}),'#4C84C4','#fff','#5A6B85'),
+      groupBtns, codeDots, codePad, memberPad,
+      kGroupLabel:st.kGroup?this.groupLabel(st.kSession,st.kGroup):'Select a group above', kGroupLabelColor:st.kGroup?'#21314F':'#9AA8BD',
+      kCodeErr:st.kCodeErr, beginSession:this.beginSession, beginSession2:this.beginSession2,
+      beginBg:begin?'#BE6A45':'#D8C3B8', beginShadow:begin?'0 12px 24px -10px rgba(190,106,69,.65)':'none',
+      kPresent:String(kPresentNum),
+      kModeSeg:this.seg(['Check in','Check out'],st.kMode==='in'?'Check in':'Check out',this.setKMode,'#21314F','#fff','#5A6B85'),
+      kEntry:st.kEntry, onMemberName:this.onMemberName,
+      memberActionWord:st.kMode==='in'?'in':'out',
+      memberMatchNote:(st.kEntry.trim().length>=2&&kGroupRoster.some(r=>r.name.toLowerCase()===st.kEntry.trim().toLowerCase()))?'\u2713 We found your name':'',
+      doCheck:this.doCheck, completeGroup:this.completeGroup, nextMember:this.nextMember,
+      memberActionLabel:st.kMode==='in'?'Check in':'Check out',
+      memberActionBg:st.kEntry.trim().length>=2?'#BE6A45':'#D8C3B8', memberActionShadow:st.kEntry.trim().length>=2?'0 12px 24px -10px rgba(190,106,69,.65)':'none',
+      confirmHeadline:isIn?'You\u2019re checked in':'You\u2019re checked out',
+      confirmName:conf?conf.name:'', confirmGroup:conf?conf.group:'', confirmTime:conf?conf.time:'',
+      confirmStampLabel:isIn?'Check-in time':'Check-out time',
+      confirmBg:isIn?'#EAF6F0':'#EEF4FB', confirmRing:isIn?'#2E9E73':'#4C84C4',
+      confirmShadow:isIn?'rgba(46,158,115,.55)':'rgba(76,132,196,.55)', confirmText:isIn?'#1F7A56':'#2C5C94',
+      closeoutCheckedIn:String(kStats.ci), closeoutPresent:String(kStats.present), closeoutRange:'1:00 PM – '+this.fmtClock(st.demoMin),
+
+      // staff
+      staffEmail:st.staffEmail, onStaffEmail:this.onStaffEmail, staffMfa:st.staffMfa, onStaffMfa:this.onStaffMfa,
+      staffVerify:this.staffVerify, staffVerifyBg:(st.staffMfa.length===6&&st.staffEmail.includes('@'))?'#BE6A45':'#D8C3B8',
+      staffVerifyShadow:(st.staffMfa.length===6&&st.staffEmail.includes('@'))?'0 10px 22px -8px rgba(190,106,69,.6)':'none',
+      staffName:st.staffName, today,
+      staffSessionSeg:this.seg(this.SESSIONS,st.staffSession,this.staffSetSession,'#4C84C4','#fff','#7A8AA3'),
+      staffSession:st.staffSession, staffFrom:st.staffFrom, staffTo:st.staffTo, onStaffFrom:this.onStaffFrom, onStaffTo:this.onStaffTo,
+      staffKpis, staffGroupStr:String(st.staffGroup), onStaffGroup:this.onStaffGroup, groupOptions,
+      staffStatusChips, staffSearch:st.staffSearch, onStaffSearch:this.onStaffSearch,
+      toggleStaffView:this.toggleStaffView, staffViewToggleLabel:st.staffView==='live'?'Show empty state':'Show live state',
+      addClientIn:this.addClientIn, addClientExpected:this.addClientExpected, onNewName:this.onNewName, onNewId:this.onNewId, newName:st.newName, newId:st.newId, staffToday:this.staffToday, leaderToday:this.leaderToday, staffGroupLabel:this.groupLabel(st.staffSession,st.staffGroup),
+      staffHasRows:staffRows.length>0, staffEmpty:base.length===0, staffRows,
+      staffEmptyMsg:!this.rangeHasToday(st.staffFrom,st.staffTo)?('No session records for '+this.rangeLabel(st.staffFrom,st.staffTo)):(st.staffView==='empty'?'Switch to live state to see a populated roster':('No members have checked in to '+this.groupLabel(st.staffSession,st.staffGroup)+' yet')),
+
+      // leader
+      leaderEmail:st.leaderEmail, onLeaderEmail:this.onLeaderEmail, leaderMfa:st.leaderMfa, onLeaderMfa:this.onLeaderMfa,
+      leaderVerify:this.leaderVerify, leaderVerifyBg:(st.leaderMfa.length===6&&st.leaderEmail.includes('@'))?'#BE6A45':'#D8C3B8',
+      leaderVerifyShadow:(st.leaderMfa.length===6&&st.leaderEmail.includes('@'))?'0 10px 22px -8px rgba(190,106,69,.6)':'none',
+      leaderName:st.leaderName,
+      leaderSessionSeg:this.chips(['All','Morning','Afternoon','Evening'],st.leaderSessionF||'All',this.setLeaderSession).map(c=>({label:c.label,bg:c.label===(st.leaderSessionF||'All')?'#fff':'transparent',fg:c.label===(st.leaderSessionF||'All')?'#21314F':'#C7D6EA',onClick:c.onClick})),
+      leaderRollup, leaderFac:st.leaderFac, onLeaderFac:this.onLeaderFac, facOptions,
+      leaderStatusChips, leaderSearch:st.leaderSearch, onLeaderSearch:this.onLeaderSearch,
+      leaderCards, backToOverview:this.backToOverview,
+      leaderFrom:st.leaderFrom, leaderTo:st.leaderTo, onLeaderFrom:this.onLeaderFrom, onLeaderTo:this.onLeaderTo,
+      leaderHasCards:leaderCards.length>0, leaderNoCards:leaderCards.length===0,
+      leaderNoCardsMsg:!this.rangeHasToday(st.leaderFrom,st.leaderTo)?('No active groups for '+this.rangeLabel(st.leaderFrom,st.leaderTo)):'No groups match the current filters',
+      ...dv
+    };
+  }
+}
+</script>
+</body>
+</html>

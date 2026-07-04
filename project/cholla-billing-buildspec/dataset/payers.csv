@@ -1,0 +1,12 @@
+payer_name,payer_type,pay_days,pt_resp,payer_id
+Arizona Complete Health (AzCH-CCP),Medicaid,28,0.0,PAY001
+Mercy Care (Aetna),Medicaid,26,0.0,PAY002
+Care1st Health Plan Arizona,Medicaid,30,0.0,PAY003
+Banner University Family Care,Medicaid,27,0.0,PAY004
+UnitedHealthcare Community Plan,Medicaid,31,0.0,PAY005
+Molina Healthcare of Arizona,Medicaid,33,0.0,PAY006
+AZ Blue (BCBS Arizona),Commercial,34,0.18,PAY007
+Cigna Behavioral Health,Commercial,38,0.22,PAY008
+UnitedHealthcare Commercial,Commercial,40,0.2,PAY009
+Aetna Commercial,Commercial,37,0.19,PAY010
+Self-Pay,Self-Pay,20,1.0,PAY011

@@ -1,0 +1,19 @@
+service_code,code_system,description,charge,allowed
+H0018,HCPCS,"BHRF Residential SUD, per diem",780,410
+H0019,HCPCS,"BHRF Residential MH, per diem",800,420
+H0035,HCPCS,"Partial Hospitalization (PHP), per diem",1060,560
+H0015,HCPCS,"IOP - Substance Use, per diem",445,235
+S9480,HCPCS,"IOP - Mental Health, per diem",430,225
+90791,CPT,Psychiatric diagnostic evaluation,440,235
+90792,CPT,Psych diagnostic eval w/ medical,500,268
+90837,CPT,"Psychotherapy, 60 min",260,138
+90834,CPT,"Psychotherapy, 45 min",205,108
+90853,CPT,Group psychotherapy,90,44
+99214,CPT,"E/M med management, established",235,126
+H0031,HCPCS,MH assessment by non-physician,320,168
+H0004,HCPCS,"Behavioral health counseling, per 15 min",72,38
+G0480,HCPCS,"Definitive drug test, 1-7 classes",225,118
+80305,CPT,Presumptive drug screen,70,32
+H0038,HCPCS,"Peer support, per 15 min",32,17
+T1017,HCPCS,"Targeted case management, per 15 min",46,24
+J2315,HCPCS,Naltrexone (Vivitrol) injection,1400,1180
