@@ -1,0 +1,65 @@
+/* Cholla design system — global base (ported from the prototype helmet). */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap");
+
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: "Inter", system-ui, sans-serif;
+  background: #eef4fb;
+  color: #21314f;
+  -webkit-font-smoothing: antialiased;
+}
+input,
+button,
+select {
+  font-family: inherit;
+}
+button {
+  cursor: pointer;
+}
+::placeholder {
+  color: #9aa8bd;
+}
+a {
+  color: inherit;
+}
+
+@keyframes cb-fade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes cb-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.cb-scroll::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+.cb-scroll::-webkit-scrollbar-thumb {
+  background: #c9d6e8;
+  border-radius: 999px;
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+.cb-nav:hover {
+  background: rgba(255, 255, 255, 0.08) !important;
+}

@@ -1,0 +1,22 @@
+# Local development database only. Vercel uses a managed Postgres via DATABASE_URL.
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: cholla-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: cholla
+      POSTGRES_PASSWORD: cholla
+      POSTGRES_DB: cholla
+    ports:
+      - "5432:5432"
+    volumes:
+      - cholla-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cholla"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  cholla-pgdata:

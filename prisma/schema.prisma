@@ -1,0 +1,361 @@
+// Cholla Behavioral Health — Billing & UR Intelligence Platform
+// Data model per buildspec 03_DATA_MODEL.md + 04_ROLES + the Addition Spec (11).
+// Money is stored as Float (dollars) to reproduce the validated synthetic aggregates
+// exactly (see docs/DECISIONS.md); production should migrate to integer cents.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ===================== v1 — clinical/billing dataset =====================
+
+model Member {
+  memberId   String   @id @map("member_id")
+  memberName String   @map("member_name")
+  dob        String?
+  claims        Claim[]
+  authorizations Authorization[]
+  censusEvents  CensusEvent[]
+  @@map("member")
+}
+
+model Payer {
+  payerId   String  @id @map("payer_id")
+  payerName String  @map("payer_name")
+  payerType String  @map("payer_type") // Medicaid | Commercial | Self-Pay
+  payDays   Int     @map("pay_days")
+  ptResp    Float   @map("pt_resp")
+  claims         Claim[]
+  authorizations Authorization[]
+  payments       Payment[]
+  @@map("payer")
+}
+
+model ServiceCode {
+  serviceCode String @id @map("service_code")
+  codeSystem  String @map("code_system") // CPT | HCPCS
+  description String
+  charge      Float
+  allowed     Float
+  lines       ClaimLine[]
+  @@map("service_code")
+}
+
+model Provider {
+  providerId   String @id @map("provider_id")
+  providerName String @map("provider_name")
+  providerRole String @map("provider_role") // BHMP | BHP | BHT
+  claims       Claim[]
+  @@map("provider")
+}
+
+model Claim {
+  claimId       String   @id @map("claim_id")
+  memberId      String   @map("member_id")
+  payerId       String   @map("payer_id")
+  payerName     String   @map("payer_name")
+  payerType     String   @map("payer_type")
+  levelOfCare   String   @map("level_of_care")
+  episodeId     String?  @map("episode_id")
+  dosStart      String   @map("dos_start")
+  dosEnd        String   @map("dos_end")
+  dosMonth      String   @map("dos_month")
+  renderingProviderId String? @map("rendering_provider")
+  status        String   // Draft | Submitted | In Process | Paid | Denied | Rejected
+  submitDate    String?  @map("submit_date")
+  paidDate      String?  @map("paid_date")
+  chargeTotal   Float    @map("charge_total")
+  allowedTotal  Float    @map("allowed_total")
+  paidAmount    Float    @map("paid_amount")
+  patientPaid   Float    @map("patient_paid")
+  collected     Float
+  contractualAdj Float   @map("contractual_adj")
+  arBalance     Float    @map("ar_balance")
+
+  member   Member   @relation(fields: [memberId], references: [memberId])
+  payer    Payer    @relation(fields: [payerId], references: [payerId])
+  provider Provider? @relation(fields: [renderingProviderId], references: [providerId])
+  lines    ClaimLine[]
+  payments Payment[]
+  denials  Denial[]
+
+  @@index([status])
+  @@index([payerId])
+  @@index([levelOfCare])
+  @@index([dosMonth])
+  @@map("claim")
+}
+
+model ClaimLine {
+  id           Int    @id @default(autoincrement())
+  claimId      String @map("claim_id")
+  serviceCode  String @map("service_code")
+  units        Int
+  chargeAmount Float  @map("charge_amount")
+  allowedAmount Float @map("allowed_amount")
+  claim   Claim       @relation(fields: [claimId], references: [claimId])
+  code    ServiceCode @relation(fields: [serviceCode], references: [serviceCode])
+  @@index([claimId])
+  @@map("claim_line")
+}
+
+model Payment {
+  paymentId    String @id @map("payment_id")
+  claimId      String @map("claim_id")
+  payerId      String @map("payer_id")
+  paidAmount   Float  @map("paid_amount")
+  patientPaid  Float  @map("patient_paid")
+  contractualAdj Float @map("contractual_adj")
+  paymentDate  String @map("payment_date")
+  claim Claim @relation(fields: [claimId], references: [claimId])
+  payer Payer @relation(fields: [payerId], references: [payerId])
+  @@index([claimId])
+  @@map("payment")
+}
+
+model Denial {
+  denialId   String  @id @map("denial_id")
+  claimId    String  @map("claim_id")
+  type       String  // Denial | Rejection
+  reasonCode String  @map("reason_code")
+  reasonDesc String  @map("reason_desc")
+  amount     Float
+  status     String
+  nextAction String? @map("next_action")
+  flagDate   String  @map("flag_date")
+  assignee   String?
+  rootCause  String? @map("root_cause") // Addition 2.4: front-end | auth | clinical-doc | payer | credentialing
+  claim Claim @relation(fields: [claimId], references: [claimId])
+  @@index([type])
+  @@index([status])
+  @@map("denial")
+}
+
+model Authorization {
+  authorizationId  String  @id @map("authorization_id")
+  memberId         String  @map("member_id")
+  episodeId        String? @map("episode_id")
+  payerId          String  @map("payer_id")
+  levelOfCare      String  @map("level_of_care")
+  authNumber       String  @map("auth_number")
+  conRon           String? @map("con_ron")
+  unitsAuthorized  Int     @map("units_authorized")
+  unitsUsed        Int     @map("units_used")
+  unitType         String? @map("unit_type")
+  startDate        String  @map("start_date")
+  endDate          String  @map("end_date")
+  status           String
+  daysToExpiration Int?    @map("days_to_expiration")
+  member Member @relation(fields: [memberId], references: [memberId])
+  payer  Payer  @relation(fields: [payerId], references: [payerId])
+  @@index([status])
+  @@index([levelOfCare])
+  @@map("authorization")
+}
+
+model CensusEvent {
+  censusEventId String  @id @map("census_event_id")
+  memberId      String  @map("member_id")
+  episodeId     String? @map("episode_id")
+  levelOfCare   String  @map("level_of_care")
+  dateIn        String  @map("date_in")
+  dateOut       String? @map("date_out")
+  status        String  // Active | Discharged
+  member Member @relation(fields: [memberId], references: [memberId])
+  @@index([status])
+  @@index([levelOfCare])
+  @@map("census_event")
+}
+
+// ===================== Platform tables =====================
+
+model AppUser {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  role      String   // client_viewer | operations | junior_biller | billing_manager | admin
+  isActive  Boolean  @default(true) @map("is_active")
+  lastLogin DateTime? @map("last_login")
+  createdAt DateTime @default(now()) @map("created_at")
+  @@map("app_user")
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String?  @map("actor_user_id")
+  actorName   String?  @map("actor_name")
+  action      String
+  entityType  String   @map("entity_type")
+  entityId    String?  @map("entity_id")
+  beforeJson  Json?    @map("before_json")
+  afterJson   Json?    @map("after_json")
+  ip          String?
+  ts          DateTime @default(now())
+  @@index([ts])
+  @@map("audit_log")
+}
+
+model Connection {
+  id           String   @id @default(cuid())
+  name         String
+  kind         String
+  status       String   // Connected | Paused | Always on
+  lastSyncAt   String?  @map("last_sync_at")
+  recordsToday Int      @default(0) @map("records_today")
+  errorCount   Int      @default(0) @map("error_count")
+  enabled      Boolean  @default(true)
+  @@map("connection")
+}
+
+model ApiKey {
+  id        String   @id @default(cuid())
+  label     String
+  scope     String?
+  maskedKey String   @map("masked_key")
+  createdAt DateTime @default(now()) @map("created_at")
+  revokedAt DateTime? @map("revoked_at")
+  @@map("api_key")
+}
+
+model WebhookEvent {
+  id         String   @id @default(cuid())
+  topic      String
+  statusCode Int      @map("status_code")
+  receivedAt DateTime @default(now()) @map("received_at")
+  retried    Boolean  @default(false)
+  @@map("webhook_event")
+}
+
+// ===================== v2 — Addition Spec (11) core entities =====================
+// Scaffolded now so the schema is backend-ready; wired to UI across later milestones.
+
+model EligibilityCheck {
+  id         String   @id @default(cuid())
+  memberId   String   @map("member_id")
+  payerId    String   @map("payer_id")
+  active     Boolean
+  planName   String?  @map("plan_name")
+  effectiveDate String? @map("effective_date")
+  termDate   String?  @map("term_date")
+  deductibleTotal Float? @map("deductible_total")
+  deductibleMet   Float? @map("deductible_met")
+  oopMax     Float?   @map("oop_max")
+  carveOut   String?  @map("carve_out")
+  paRequired Boolean? @map("pa_required")
+  status     String   @default("Verified")
+  checkedAt  DateTime @default(now()) @map("checked_at")
+  @@map("eligibility_check")
+}
+
+model VobWorksheet {
+  id        String   @id @default(cuid())
+  memberId  String   @map("member_id")
+  episodeId String?  @map("episode_id")
+  payerId   String   @map("payer_id")
+  version   Int      @default(1)
+  repName   String?  @map("rep_name")
+  refNumber String?  @map("ref_number")
+  callAt    String?  @map("call_at")
+  benefitsJson Json? @map("benefits_json")
+  notes     String?
+  createdAt DateTime @default(now()) @map("created_at")
+  @@map("vob_worksheet")
+}
+
+model AuthRequest {
+  id            String   @id @default(cuid())
+  memberId      String   @map("member_id")
+  payerId       String   @map("payer_id")
+  levelOfCare   String   @map("level_of_care")
+  unitsRequested Int     @map("units_requested")
+  justification String?
+  submissionMethod String? @map("submission_method") // Availity 278 | Portal | Fax
+  status        String   @default("Draft") // Draft | Submitted | Pending Info | Approved | Partially Approved | Denied
+  authorizationId String? @map("authorization_id")
+  submittedAt   String?  @map("submitted_at")
+  createdAt     DateTime @default(now()) @map("created_at")
+  @@map("auth_request")
+}
+
+model ConcurrentReview {
+  id           String  @id @default(cuid())
+  episodeId    String  @map("episode_id")
+  memberId     String  @map("member_id")
+  levelOfCare  String  @map("level_of_care")
+  dueDate      String  @map("due_date")
+  status       String  @default("Upcoming") // Upcoming | Due today | Overdue | Complete
+  outcome      String?
+  daysApproved Int?    @map("days_approved")
+  nextReview   String? @map("next_review")
+  payerContact String? @map("payer_contact")
+  @@map("concurrent_review")
+}
+
+model PeerToPeer {
+  id        String  @id @default(cuid())
+  reviewId  String? @map("review_id")
+  payerId   String  @map("payer_id")
+  scheduledAt String? @map("scheduled_at")
+  outcome   String? // Overturned | Upheld | Partial
+  @@map("peer_to_peer")
+}
+
+model Appeal {
+  id        String  @id @default(cuid())
+  denialId  String? @map("denial_id")
+  authRequestId String? @map("auth_request_id")
+  level     String  // Peer-to-peer | 1st level | 2nd level | External / state fair hearing
+  deadline  String?
+  status    String  @default("Open")
+  letterRef String? @map("letter_ref")
+  dollarsRecovered Float? @map("dollars_recovered")
+  @@map("appeal")
+}
+
+model ScrubRule {
+  id       String  @id @default(cuid())
+  name     String
+  category String
+  severity String  // Block | Warn
+  enabled  Boolean @default(true)
+  @@map("scrub_rule")
+}
+
+model FeeSchedule {
+  id          String @id @default(cuid())
+  payerId     String @map("payer_id")
+  serviceCode String @map("service_code")
+  expectedAllowed Float @map("expected_allowed")
+  effectiveDate String? @map("effective_date")
+  @@map("fee_schedule")
+}
+
+model CredentialingRecord {
+  id         String  @id @default(cuid())
+  providerId String  @map("provider_id")
+  payerId    String  @map("payer_id")
+  status     String  // Not enrolled | Submitted | In process | Active | Term
+  effectiveDate String? @map("effective_date")
+  revalidationDate String? @map("revalidation_date")
+  caqhDate   String? @map("caqh_date")
+  @@map("credentialing_record")
+}
+
+model Task {
+  id        String   @id @default(cuid())
+  kind      String   // alert-derived task type
+  title     String
+  entityType String? @map("entity_type")
+  entityId  String?  @map("entity_id")
+  assignee  String?
+  slaDue    String?  @map("sla_due")
+  status    String   @default("Open")
+  createdAt DateTime @default(now()) @map("created_at")
+  @@map("task")
+}
